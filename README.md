@@ -1,6 +1,6 @@
 # WYSIWYG MD 📝
 
-**[Live Demo]([https://your-username.github.io/your-repo-name](https://punitvthakkar.github.io/wysiwygmd/))** 
+**[Live Demo](https://punitvthakkar.github.io/wysiwygmd/)** 
 
 WYSIWYG MD is a purely visual Markdown editor. It allows you to write and format text exactly as it will appear, without ever having to write or look at Markdown syntax. Behind the scenes, it generates clean, standard `.md` files.
 
