@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WYSIWYG MD</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <!-- Markdown Parsers -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
-    
+
     <style>
         /* ============================================================
            1. DESIGN TOKEN SYSTEM
@@ -73,9 +76,9 @@
             --space-20: 40px;
 
             /* Shadows */
-            --shadow-soft: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-            --shadow-medium: 0 4px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06);
-            --shadow-large: 0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+            --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-large: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
             --shadow-glow: 0 0 24px rgba(99, 102, 241, 0.15);
 
             /* Typography */
@@ -118,16 +121,172 @@
 
             --selection-bg: rgba(99, 102, 241, 0.25);
 
-            --shadow-soft: 0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.15);
-            --shadow-medium: 0 4px 12px rgba(0,0,0,0.25), 0 1px 3px rgba(0,0,0,0.2);
-            --shadow-large: 0 12px 40px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.25);
+            --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.2);
+            --shadow-large: 0 12px 40px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.25);
             --shadow-glow: 0 0 24px rgba(99, 102, 241, 0.25);
+        }
+
+        /* MONO B&W THEME */
+        [data-theme="mono"] {
+            --bg-canvas: #F9F9F9;
+            --bg-surface: #FFFFFF;
+            --bg-surface-elevated: #FFFFFF;
+            --bg-surface-hover: #F3F3F3;
+            --bg-surface-active: #E8E8E8;
+            --bg-inset: #F5F5F5;
+            --text-primary: #0A0A0A;
+            --text-secondary: #444444;
+            --text-muted: #888888;
+            --border-subtle: #E0E0E0;
+            --border-strong: #BDBDBD;
+            --accent-primary: #111111;
+            --accent-primary-hover: #000000;
+            --accent-primary-soft: rgba(0, 0, 0, 0.06);
+            --accent-secondary: #444444;
+            --selection-bg: rgba(0, 0, 0, 0.1);
+            --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-large: 0 12px 40px rgba(0, 0, 0, 0.14);
+            --shadow-glow: none;
+            --focus-ring: 0 0 0 2px var(--bg-surface), 0 0 0 4px #111;
+        }
+
+        /* OCEAN THEME */
+        [data-theme="ocean"] {
+            --bg-canvas: #0D1B2A;
+            --bg-surface: #1B2A3B;
+            --bg-surface-elevated: #223347;
+            --bg-surface-hover: #2A3D52;
+            --bg-surface-active: #324A61;
+            --bg-inset: #162231;
+            --text-primary: #E0F2FE;
+            --text-secondary: #7FB3D3;
+            --text-muted: #4E7E9D;
+            --border-subtle: #2A3D52;
+            --border-strong: #3D5A73;
+            --accent-primary: #06B6D4;
+            --accent-primary-hover: #0891B2;
+            --accent-primary-soft: rgba(6, 182, 212, 0.15);
+            --accent-secondary: #22D3EE;
+            --selection-bg: rgba(6, 182, 212, 0.25);
+            --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.35);
+            --shadow-large: 0 12px 40px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 24px rgba(6, 182, 212, 0.25);
+            --focus-ring: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent-primary);
+        }
+
+        /* FOREST THEME */
+        [data-theme="forest"] {
+            --bg-canvas: #0F1A0E;
+            --bg-surface: #1A2B18;
+            --bg-surface-elevated: #213620;
+            --bg-surface-hover: #284226;
+            --bg-surface-active: #304E2E;
+            --bg-inset: #142213;
+            --text-primary: #DCFCE7;
+            --text-secondary: #86EFAC;
+            --text-muted: #4ADE80;
+            --border-subtle: #284226;
+            --border-strong: #3A5E38;
+            --accent-primary: #22C55E;
+            --accent-primary-hover: #16A34A;
+            --accent-primary-soft: rgba(34, 197, 94, 0.15);
+            --accent-secondary: #4ADE80;
+            --selection-bg: rgba(34, 197, 94, 0.25);
+            --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.35);
+            --shadow-large: 0 12px 40px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 24px rgba(34, 197, 94, 0.25);
+            --focus-ring: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent-primary);
+        }
+
+        /* SUNSET THEME */
+        [data-theme="sunset"] {
+            --bg-canvas: #1A0A0A;
+            --bg-surface: #2B1515;
+            --bg-surface-elevated: #371C1C;
+            --bg-surface-hover: #422222;
+            --bg-surface-active: #4F2929;
+            --bg-inset: #221111;
+            --text-primary: #FEF3C7;
+            --text-secondary: #FCA5A5;
+            --text-muted: #F87171;
+            --border-subtle: #422222;
+            --border-strong: #5E3333;
+            --accent-primary: #F97316;
+            --accent-primary-hover: #EA580C;
+            --accent-primary-soft: rgba(249, 115, 22, 0.15);
+            --accent-secondary: #FB923C;
+            --selection-bg: rgba(249, 115, 22, 0.25);
+            --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.3);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.35);
+            --shadow-large: 0 12px 40px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 24px rgba(249, 115, 22, 0.25);
+            --focus-ring: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent-primary);
+        }
+
+        /* CANDY THEME */
+        [data-theme="candy"] {
+            --bg-canvas: #FFF0F6;
+            --bg-surface: #FFFFFF;
+            --bg-surface-elevated: #FFFFFF;
+            --bg-surface-hover: #FFF0F6;
+            --bg-surface-active: #FFE0EE;
+            --bg-inset: #FFF5FA;
+            --text-primary: #3D0026;
+            --text-secondary: #9D174D;
+            --text-muted: #BE185D;
+            --border-subtle: #FBCFE8;
+            --border-strong: #F9A8D4;
+            --accent-primary: #EC4899;
+            --accent-primary-hover: #DB2777;
+            --accent-primary-soft: rgba(236, 72, 153, 0.1);
+            --accent-secondary: #A855F7;
+            --selection-bg: rgba(236, 72, 153, 0.15);
+            --shadow-soft: 0 1px 3px rgba(236, 72, 153, 0.1);
+            --shadow-medium: 0 4px 12px rgba(236, 72, 153, 0.12);
+            --shadow-large: 0 12px 40px rgba(236, 72, 153, 0.18);
+            --shadow-glow: 0 0 24px rgba(236, 72, 153, 0.2);
+            --focus-ring: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent-primary);
+        }
+
+        /* PAPER THEME */
+        [data-theme="paper"] {
+            --bg-canvas: #F5F0E8;
+            --bg-surface: #FFFDF8;
+            --bg-surface-elevated: #FFFDF8;
+            --bg-surface-hover: #F5F0E8;
+            --bg-surface-active: #EDE7D6;
+            --bg-inset: #F8F4EC;
+            --text-primary: #2D2013;
+            --text-secondary: #6B5740;
+            --text-muted: #9D8B73;
+            --border-subtle: #E5DAC8;
+            --border-strong: #C9B99A;
+            --accent-primary: #B45309;
+            --accent-primary-hover: #92400E;
+            --accent-primary-soft: rgba(180, 83, 9, 0.08);
+            --accent-secondary: #D97706;
+            --selection-bg: rgba(180, 83, 9, 0.12);
+            --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.09);
+            --shadow-large: 0 12px 40px rgba(0, 0, 0, 0.12);
+            --shadow-glow: 0 0 24px rgba(180, 83, 9, 0.12);
+            --focus-ring: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent-primary);
         }
 
         /* ============================================================
            2. RESET & BASE
            ============================================================ */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font: var(--text-body);
@@ -142,198 +301,1073 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        ::selection { background: var(--selection-bg); }
+        ::selection {
+            background: var(--selection-bg);
+        }
 
-        :focus-visible { outline: none; box-shadow: var(--focus-ring); }
+        :focus-visible {
+            outline: none;
+            box-shadow: var(--focus-ring);
+        }
+
+        /* Fix 1: suppress focus ring on the contenteditable editor itself */
+        #visualEditor:focus-visible {
+            box-shadow: none !important;
+            outline: none !important;
+        }
 
         /* ============================================================
            3. UTILITY CLASSES
            ============================================================ */
-        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-        .separator { width: 1px; height: 24px; background: var(--border-subtle); margin: 0 var(--space-2); flex-shrink: 0; }
-        .toolbar-group { display: flex; align-items: center; gap: var(--space-2); }
-        .toolbar-group-label { font: var(--text-meta); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 0 var(--space-3); white-space: nowrap; user-select: none; }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .separator {
+            width: 1px;
+            height: 24px;
+            background: var(--border-subtle);
+            margin: 0 var(--space-2);
+            flex-shrink: 0;
+        }
+
+        .toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .toolbar-group-label {
+            font: var(--text-meta);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 var(--space-3);
+            white-space: nowrap;
+            user-select: none;
+        }
 
         /* ============================================================
            4. TOP APP BAR
            ============================================================ */
         .app-bar {
-            height: var(--app-bar-height); background: var(--bg-surface);
+            height: var(--app-bar-height);
+            background: var(--bg-surface);
             border-bottom: 1px solid var(--border-subtle);
-            display: flex; align-items: center; padding: 0 var(--space-8);
-            gap: var(--space-8); z-index: 50; flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            padding: 0 var(--space-8);
+            gap: var(--space-8);
+            z-index: 50;
+            flex-shrink: 0;
         }
-        .app-bar-brand { display: flex; align-items: center; gap: var(--space-4); }
+
+        .app-bar-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
         .app-bar-logo {
-            width: 28px; height: 28px;
+            width: 28px;
+            height: 28px;
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            border-radius: var(--radius-md); display: flex; align-items: center;
-            justify-content: center; color: white; font-size: 14px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
         }
-        .app-bar-title { font: var(--text-body-medium); white-space: nowrap; }
-        .app-bar-spacer { flex: 1; }
-        .app-bar-actions { display: flex; align-items: center; gap: var(--space-4); }
+
+        .app-bar-title {
+            font: var(--text-body-medium);
+            white-space: nowrap;
+        }
+
+        .app-bar-spacer {
+            flex: 1;
+        }
+
+        .app-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
 
         /* Buttons */
         .btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            gap: var(--space-3); font: var(--text-body-medium); border: none;
-            cursor: pointer; border-radius: var(--radius-md); transition: 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-3);
+            font: var(--text-body-medium);
+            border: none;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            transition: 0.1s;
         }
-        .btn:active { transform: scale(0.96); }
-        .btn-primary { background: var(--accent-primary); color: var(--text-on-accent); padding: var(--space-4) var(--space-8); box-shadow: var(--shadow-soft); }
-        .btn-primary:hover { background: var(--accent-primary-hover); }
-        .btn-secondary { background: var(--bg-surface); color: var(--text-primary); padding: var(--space-4) var(--space-8); border: 1px solid var(--border-subtle); }
-        .btn-secondary:hover { background: var(--bg-surface-hover); }
-        .btn-icon { width: 36px; height: 36px; padding: 0; background: transparent; color: var(--text-secondary); border-radius: var(--radius-md); }
-        .btn-icon:hover { background: var(--bg-surface-hover); color: var(--text-primary); }
-        .btn-sm { padding: var(--space-2) var(--space-4); font: var(--text-meta-medium); border-radius: var(--radius-sm); }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: var(--text-on-accent);
+            padding: var(--space-4) var(--space-8);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            padding: var(--space-4) var(--space-8);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-surface-hover);
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: var(--radius-md);
+        }
+
+        .btn-icon:hover {
+            background: var(--bg-surface-hover);
+            color: var(--text-primary);
+        }
+
+        .btn-sm {
+            padding: var(--space-2) var(--space-4);
+            font: var(--text-meta-medium);
+            border-radius: var(--radius-sm);
+        }
 
         /* ============================================================
            5. COMMAND BAR (Toolbar)
            ============================================================ */
         .command-bar {
-            background: var(--bg-surface); border-bottom: 1px solid var(--border-subtle);
-            display: flex; align-items: center; padding: var(--space-3) var(--space-8);
-            gap: var(--space-3); flex-shrink: 0; overflow-x: auto; scrollbar-width: thin; z-index: 40;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            padding: var(--space-3) var(--space-8);
+            gap: var(--space-3);
+            flex-shrink: 0;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            z-index: 40;
         }
+
         .command-bar .toolbar-btn {
-            width: 32px; height: 32px; display: inline-flex; align-items: center;
-            justify-content: center; background: transparent; border: 1px solid transparent;
-            border-radius: var(--radius-sm); color: var(--text-secondary); cursor: pointer;
-            transition: 0.1s; flex-shrink: 0; font-size: 13px; position: relative;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: 0.1s;
+            flex-shrink: 0;
+            font-size: 13px;
+            position: relative;
         }
-        .command-bar .toolbar-btn:hover { background: var(--bg-surface-hover); color: var(--text-primary); border-color: var(--border-subtle); }
-        .command-bar .toolbar-btn.active { background: var(--accent-primary-soft); color: var(--accent-primary); }
+
+        .command-bar .toolbar-btn:hover {
+            background: var(--bg-surface-hover);
+            color: var(--text-primary);
+            border-color: var(--border-subtle);
+        }
+
+        .command-bar .toolbar-btn.active {
+            background: var(--accent-primary-soft);
+            color: var(--accent-primary);
+        }
+
         .command-bar .toolbar-select {
-            height: 32px; padding: 0 var(--space-4); border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-sm); background: var(--bg-surface); color: var(--text-secondary);
-            font: var(--text-meta); cursor: pointer; outline: none; transition: 0.1s;
+            height: 32px;
+            padding: 0 var(--space-4);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+            font: var(--text-meta);
+            cursor: pointer;
+            outline: none;
+            transition: 0.1s;
         }
 
         /* Tooltip */
         .command-bar .toolbar-btn[data-tooltip]::after {
-            content: attr(data-tooltip); position: absolute; bottom: calc(100% + 8px);
-            left: 50%; transform: translateX(-50%) translateY(4px); background: var(--bg-surface-elevated);
-            color: var(--text-primary); font: var(--text-meta); padding: var(--space-2) var(--space-4);
-            border-radius: var(--radius-sm); white-space: nowrap; box-shadow: var(--shadow-medium);
-            border: 1px solid var(--border-subtle); pointer-events: none; opacity: 0; transition: 0.1s; z-index: 100;
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: var(--bg-surface-elevated);
+            color: var(--text-primary);
+            font: var(--text-meta);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-sm);
+            white-space: nowrap;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-subtle);
+            pointer-events: none;
+            opacity: 0;
+            transition: 0.1s;
+            z-index: 100;
         }
-        .command-bar .toolbar-btn[data-tooltip]:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .command-bar .toolbar-btn[data-tooltip]:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
 
         /* ============================================================
            6. WORKSPACE & VISUAL EDITOR (PROSE)
            ============================================================ */
         .workspace {
-            flex: 1; display: flex; flex-direction: column; background: var(--bg-canvas);
-            overflow: hidden; position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-canvas);
+            overflow: hidden;
+            position: relative;
         }
+
         .editor-container {
-            flex: 1; background: var(--bg-surface); overflow-y: auto;
-            display: flex; justify-content: center; padding: var(--space-12);
+            flex: 1;
+            background: var(--bg-surface);
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            padding: var(--space-12) clamp(var(--space-8), 4vw, 64px);
         }
-        
-        /* The ContentEditable Area styling like a Markdown doc */
+
+        /* Fix 2: full-width responsive editor */
         #visualEditor {
-            width: 100%; max-width: 760px; min-height: 100%;
-            outline: none; font-size: 15px; line-height: 1.7;
-            color: var(--text-primary); padding-bottom: 200px; /* buffer at bottom */
+            width: 100%;
+            max-width: 100%;
+            min-height: 100%;
+            outline: none;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-primary);
+            padding-bottom: 200px;
         }
-        
-        #visualEditor > *:first-child { margin-top: 0; }
-        
-        #visualEditor h1, #visualEditor h2, #visualEditor h3, 
-        #visualEditor h4, #visualEditor h5, #visualEditor h6 {
-            font-weight: 600; color: var(--text-primary); margin-top: 1.5em; margin-bottom: 0.5em; line-height: 1.3;
+
+        #visualEditor>*:first-child {
+            margin-top: 0;
         }
-        #visualEditor h1 { font-size: 2.2em; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.3em; }
-        #visualEditor h2 { font-size: 1.8em; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.3em; }
-        #visualEditor h3 { font-size: 1.4em; }
-        
-        #visualEditor p, #visualEditor ul, #visualEditor ol { margin-top: 0; margin-bottom: 1em; }
-        #visualEditor ul, #visualEditor ol { padding-left: 1.5em; }
-        #visualEditor li { margin-bottom: 0.25em; }
-        
+
+        #visualEditor h1,
+        #visualEditor h2,
+        #visualEditor h3,
+        #visualEditor h4,
+        #visualEditor h5,
+        #visualEditor h6 {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            line-height: 1.3;
+        }
+
+        #visualEditor h1 {
+            font-size: 2.2em;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 0.3em;
+        }
+
+        #visualEditor h2 {
+            font-size: 1.8em;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 0.3em;
+        }
+
+        #visualEditor h3 {
+            font-size: 1.4em;
+        }
+
+        #visualEditor p,
+        #visualEditor ul,
+        #visualEditor ol {
+            margin-top: 0;
+            margin-bottom: 1em;
+        }
+
+        #visualEditor ul,
+        #visualEditor ol {
+            padding-left: 1.5em;
+        }
+
+        #visualEditor li {
+            margin-bottom: 0.25em;
+        }
+
         #visualEditor blockquote {
-            border-left: 4px solid var(--accent-primary); padding-left: 1em;
-            margin: 1.5em 0; color: var(--text-muted); font-style: italic; background: var(--accent-primary-soft);
-            padding-top: 0.5em; padding-bottom: 0.5em; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            border-left: 4px solid var(--accent-primary);
+            padding-left: 1em;
+            margin: 1.5em 0;
+            color: var(--text-muted);
+            font-style: italic;
+            background: var(--accent-primary-soft);
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
         }
-        
-        #visualEditor a { color: var(--accent-primary); text-decoration: none; font-weight: 500; }
-        #visualEditor a:hover { text-decoration: underline; }
-        
-        #visualEditor img { max-width: 100%; height: auto; display: block; margin: 1.5em 0; border-radius: var(--radius-md); box-shadow: var(--shadow-soft); }
-        
+
+        #visualEditor a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        #visualEditor a:hover {
+            text-decoration: underline;
+        }
+
+        #visualEditor img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1.5em 0;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-soft);
+        }
+
         #visualEditor pre {
-            background: var(--bg-inset); padding: 1em; border-radius: var(--radius-md);
-            overflow-x: auto; margin: 1.5em 0; font-family: var(--font-code); font-size: 0.9em;
+            background: var(--bg-inset);
+            padding: 1em;
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+            margin: 1.5em 0;
+            font-family: var(--font-code);
+            font-size: 0.9em;
             border: 1px solid var(--border-subtle);
         }
-        #visualEditor code {
-            background: var(--bg-inset); padding: 0.2em 0.4em; border-radius: var(--radius-sm);
-            font-family: var(--font-code); font-size: 0.9em; color: var(--accent-secondary);
-        }
-        #visualEditor pre code { background: transparent; padding: 0; color: inherit; }
 
-        #visualEditor hr { border: none; border-top: 2px dashed var(--border-subtle); margin: 2em 0; }
+        #visualEditor code {
+            background: var(--bg-inset);
+            padding: 0.2em 0.4em;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-code);
+            font-size: 0.9em;
+            color: var(--accent-secondary);
+        }
+
+        #visualEditor pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+        }
+
+        #visualEditor hr {
+            border: none;
+            border-top: 2px dashed var(--border-subtle);
+            margin: 2em 0;
+        }
 
         /* ============================================================
            7. STATUS BAR
            ============================================================ */
         .status-bar {
-            height: var(--status-bar-height); background: var(--bg-surface);
-            border-top: 1px solid var(--border-subtle); display: flex; align-items: center;
-            padding: 0 var(--space-8); gap: var(--space-8); flex-shrink: 0; z-index: 40;
+            height: var(--status-bar-height);
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            padding: 0 var(--space-8);
+            gap: var(--space-8);
+            flex-shrink: 0;
+            z-index: 40;
         }
-        .status-bar-section { display: flex; align-items: center; gap: var(--space-3); font: var(--text-meta); color: var(--text-muted); }
-        .status-bar-spacer { flex: 1; }
+
+        .status-bar-section {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            font: var(--text-meta);
+            color: var(--text-muted);
+        }
+
+        .status-bar-spacer {
+            flex: 1;
+        }
 
         /* ============================================================
            8. COMPONENTS (Toasts, Modals, Menus, Error)
            ============================================================ */
         /* Toasts */
-        .toast-container { position: fixed; bottom: calc(var(--status-bar-height) + var(--space-8)); left: 50%; transform: translateX(-50%); z-index: 200; display: flex; flex-direction: column; gap: var(--space-3); pointer-events: none; }
-        .toast { display: inline-flex; align-items: center; gap: var(--space-4); padding: var(--space-4) var(--space-8); background: var(--bg-surface-elevated); color: var(--text-primary); border: 1px solid var(--border-subtle); border-radius: var(--radius-full); box-shadow: var(--shadow-large); font: var(--text-meta-medium); opacity: 0; transform: translateY(12px) scale(0.95); transition: 0.2s; }
-        .toast.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-        .toast.toast-success i { color: var(--accent-success); }
-        .toast.toast-error i { color: var(--accent-danger); }
+        .toast-container {
+            position: fixed;
+            bottom: calc(var(--status-bar-height) + var(--space-8));
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+            pointer-events: none;
+        }
+
+        .toast {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-4) var(--space-8);
+            background: var(--bg-surface-elevated);
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-full);
+            box-shadow: var(--shadow-large);
+            font: var(--text-meta-medium);
+            opacity: 0;
+            transform: translateY(12px) scale(0.95);
+            transition: 0.2s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .toast.toast-success i {
+            color: var(--accent-success);
+        }
+
+        .toast.toast-error i {
+            color: var(--accent-danger);
+        }
 
         /* Overflow Menu */
-        .overflow-menu { position: absolute; top: calc(100% + var(--space-2)); right: 0; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); box-shadow: var(--shadow-large); min-width: 200px; padding: var(--space-2); z-index: 100; opacity: 0; visibility: hidden; transform: translateY(-4px); transition: 0.1s; }
-        .overflow-menu.show { opacity: 1; visibility: visible; transform: translateY(0); }
-        .overflow-menu-item { display: flex; align-items: center; gap: var(--space-4); width: 100%; padding: var(--space-4) var(--space-6); border: none; background: transparent; color: var(--text-secondary); font: var(--text-body); cursor: pointer; border-radius: var(--radius-sm); text-align: left; }
-        .overflow-menu-item:hover { background: var(--bg-surface-hover); color: var(--text-primary); }
-        .overflow-divider { height: 1px; background: var(--border-subtle); margin: var(--space-2) 0; }
+        .overflow-menu {
+            position: absolute;
+            top: calc(100% + var(--space-2));
+            right: 0;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-large);
+            min-width: 200px;
+            padding: var(--space-2);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px);
+            transition: 0.1s;
+        }
+
+        .overflow-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .overflow-menu-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            width: 100%;
+            padding: var(--space-4) var(--space-6);
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font: var(--text-body);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            text-align: left;
+        }
+
+        .overflow-menu-item:hover {
+            background: var(--bg-surface-hover);
+            color: var(--text-primary);
+        }
+
+        .overflow-divider {
+            height: 1px;
+            background: var(--border-subtle);
+            margin: var(--space-2) 0;
+        }
 
         /* Modals */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: 0.2s; }
-        .modal-overlay.show { opacity: 1; visibility: visible; }
-        .modal-dialog { background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); box-shadow: var(--shadow-large); width: 90%; max-width: 440px; padding: var(--space-12); display: flex; flex-direction: column; gap: var(--space-8); transform: translateY(12px) scale(0.97); transition: 0.2s; }
-        .modal-overlay.show .modal-dialog { transform: translateY(0) scale(1); }
-        .modal-header { display: flex; align-items: center; justify-content: space-between; }
-        .modal-title { font: var(--text-h2); }
-        .modal-close { width: 32px; height: 32px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; border-radius: var(--radius-sm); font-size: 18px; }
-        .modal-close:hover { background: var(--bg-surface-hover); color: var(--text-primary); }
-        .form-group { display: flex; flex-direction: column; gap: var(--space-2); }
-        .form-label { font: var(--text-meta-medium); color: var(--text-secondary); }
-        .form-input { height: 40px; padding: 0 var(--space-6); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--bg-inset); color: var(--text-primary); font: var(--text-body); outline: none; }
-        .form-input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px var(--accent-primary-soft); }
-        .modal-footer { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-4); }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.2s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-dialog {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-large);
+            width: 90%;
+            max-width: 440px;
+            padding: var(--space-12);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-8);
+            transform: translateY(12px) scale(0.97);
+            transition: 0.2s;
+        }
+
+        .modal-overlay.show .modal-dialog {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font: var(--text-h2);
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            font-size: 18px;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-surface-hover);
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .form-label {
+            font: var(--text-meta-medium);
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            height: 40px;
+            padding: 0 var(--space-6);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            background: var(--bg-inset);
+            color: var(--text-primary);
+            font: var(--text-body);
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-primary-soft);
+        }
+
+        .modal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: var(--space-4);
+        }
 
         /* Mobile Adjustments */
         @media (max-width: 767px) {
-            .app-bar { padding: 0 var(--space-4); }
-            .command-bar { padding: var(--space-2) var(--space-3); }
-            .toolbar-group-label { display: none; }
-            .editor-container { padding: var(--space-6); }
+            .app-bar {
+                padding: 0 var(--space-4);
+            }
+
+            .command-bar {
+                padding: var(--space-2) var(--space-3);
+            }
+
+            .toolbar-group-label {
+                display: none;
+            }
+
+            .editor-container {
+                padding: var(--space-6);
+            }
         }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-subtle);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-strong);
+        }
+
+        /* ============================================================
+           9. READER MODE — IMMERSIVE
+           ============================================================ */
+        .reader-mode-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            background: var(--bg-canvas);
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+            scroll-behavior: smooth;
+        }
+
+        .reader-mode-overlay.show {
+            display: flex;
+            animation: readerFadeIn 0.4s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        @keyframes readerFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Progress bar at the very top */
+        .reader-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: var(--accent-primary);
+            z-index: 600;
+            transition: width 0.1s linear;
+            border-radius: 0 2px 2px 0;
+        }
+
+        /* Auto-hiding floating header */
+        .reader-mode-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.0);
+            backdrop-filter: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-6) var(--space-12);
+            z-index: 550;
+            flex-shrink: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: auto;
+        }
+
+        .reader-mode-bar.hidden {
+            opacity: 0;
+            transform: translateY(-100%);
+            pointer-events: none;
+        }
+
+        .reader-mode-bar-pill {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-full);
+            padding: var(--space-3) var(--space-6);
+            box-shadow: var(--shadow-medium);
+            font: var(--text-meta-medium);
+            color: var(--text-muted);
+        }
+
+        .reader-exit-pill {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-full);
+            padding: var(--space-3) var(--space-8);
+            box-shadow: var(--shadow-medium);
+            font: var(--text-meta-medium);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .reader-exit-pill:hover {
+            background: var(--bg-surface-hover);
+            color: var(--text-primary);
+        }
+
+        /* Reading area */
+        .reader-mode-content {
+            flex: 1;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 7rem clamp(1.5rem, 5vw, 3rem) 8rem;
+            font-size: 19px;
+            line-height: 2;
+            color: var(--text-primary);
+            width: 100%;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        .reader-mode-content h1 {
+            font-family: var(--font-ui);
+            font-size: 2.4em;
+            font-weight: 700;
+            margin: 0 0 0.5em;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+
+        .reader-mode-content h2 {
+            font-family: var(--font-ui);
+            font-size: 1.6em;
+            font-weight: 600;
+            margin: 2.2em 0 0.5em;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 0.25em;
+        }
+
+        .reader-mode-content h3 {
+            font-family: var(--font-ui);
+            font-size: 1.25em;
+            font-weight: 600;
+            margin: 1.8em 0 0.4em;
+        }
+
+        .reader-mode-content h4,
+        .reader-mode-content h5,
+        .reader-mode-content h6 {
+            font-family: var(--font-ui);
+            font-weight: 600;
+            margin: 1.5em 0 0.3em;
+        }
+
+        .reader-mode-content p {
+            margin-bottom: 1.3em;
+        }
+
+        .reader-mode-content ul,
+        .reader-mode-content ol {
+            padding-left: 1.8em;
+            margin-bottom: 1.3em;
+        }
+
+        .reader-mode-content li {
+            margin-bottom: 0.4em;
+        }
+
+        .reader-mode-content blockquote {
+            border-left: 4px solid var(--accent-primary);
+            padding: 0.8em 1.5em;
+            margin: 2em 0;
+            background: var(--accent-primary-soft);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 1.05em;
+        }
+
+        .reader-mode-content code {
+            font-family: var(--font-code);
+            background: var(--bg-inset);
+            padding: 0.18em 0.4em;
+            border-radius: var(--radius-sm);
+            font-size: 0.82em;
+            color: var(--accent-secondary);
+        }
+
+        .reader-mode-content pre {
+            background: var(--bg-inset);
+            padding: 1.2em 1.4em;
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+            margin: 2em 0;
+            border: 1px solid var(--border-subtle);
+            font-size: 0.85em;
+            font-family: var(--font-code);
+        }
+
+        .reader-mode-content pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+        }
+
+        .reader-mode-content img {
+            max-width: 100%;
+            border-radius: var(--radius-md);
+            margin: 2em auto;
+            display: block;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .reader-mode-content a {
+            color: var(--accent-primary);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .reader-mode-content a:hover {
+            opacity: 0.75;
+        }
+
+        .reader-mode-content hr {
+            border: none;
+            border-top: 1px solid var(--border-subtle);
+            margin: 3em 0;
+        }
+
+        .reader-first-h1 {
+            margin-top: 0 !important;
+        }
+
+        /* ============================================================
+           10. THEME PICKER — FUN CARD GRID
+           ============================================================ */
+        .theme-picker-section {
+            padding: var(--space-2) 0 var(--space-4);
+        }
+
+        .theme-picker-label {
+            font: var(--text-meta);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            padding: var(--space-4) var(--space-6) var(--space-3);
+        }
+
+        .theme-picker {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-3);
+            padding: 0 var(--space-6) var(--space-2);
+        }
+
+        .theme-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            padding: var(--space-3) var(--space-2);
+            border-radius: var(--radius-md);
+            border: 2px solid transparent;
+            transition: border-color 0.15s, background 0.15s, transform 0.18s cubic-bezier(.34, 1.56, .64, 1);
+            background: transparent;
+        }
+
+        .theme-card:hover {
+            background: var(--bg-surface-hover);
+            transform: translateY(-2px);
+        }
+
+        .theme-card.active {
+            border-color: var(--accent-primary);
+            background: var(--accent-primary-soft);
+        }
+
+        .theme-card-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+        }
+
+        .theme-card-name {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-align: center;
+            white-space: nowrap;
+            line-height: 1;
+        }
+
+        .theme-card.active .theme-card-name {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        /* dot colors */
+        .theme-card[data-theme-name="light"] .theme-card-dot {
+            background: conic-gradient(#F0F2F5 180deg, #6366F1 0deg);
+        }
+
+        .theme-card[data-theme-name="dark"] .theme-card-dot {
+            background: conic-gradient(#1A1D27 180deg, #6366F1 0deg);
+        }
+
+        .theme-card[data-theme-name="mono"] .theme-card-dot {
+            background: conic-gradient(#F9F9F9 180deg, #111111 0deg);
+        }
+
+        .theme-card[data-theme-name="ocean"] .theme-card-dot {
+            background: conic-gradient(#0D1B2A 180deg, #06B6D4 0deg);
+        }
+
+        .theme-card[data-theme-name="forest"] .theme-card-dot {
+            background: conic-gradient(#0F1A0E 180deg, #22C55E 0deg);
+        }
+
+        .theme-card[data-theme-name="sunset"] .theme-card-dot {
+            background: conic-gradient(#1A0A0A 180deg, #F97316 0deg);
+        }
+
+        .theme-card[data-theme-name="candy"] .theme-card-dot {
+            background: conic-gradient(#FFF0F6 180deg, #EC4899 0deg);
+        }
+
+        .theme-card[data-theme-name="paper"] .theme-card-dot {
+            background: conic-gradient(#F5F0E8 180deg, #B45309 0deg);
+        }
+
+        /* ============================================================
+           11. PRINT / PDF EXPORT
+           ============================================================ */
+        @media print {
+
+            .app-bar,
+            .command-bar,
+            .status-bar,
+            .toast-container,
+            .modal-overlay,
+            .reader-mode-overlay {
+                display: none !important;
+            }
+
+            body {
+                overflow: visible;
+                background: white !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .workspace,
+            .editor-container {
+                overflow: visible !important;
+                background: white !important;
+            }
+
+            #visualEditor {
+                max-width: 100% !important;
+                padding: 0 !important;
+                color: black !important;
+                padding-bottom: 0 !important;
+            }
+
+            #visualEditor a {
+                color: #4338CA !important;
+            }
+
+            #visualEditor pre,
+            #visualEditor code {
+                background: #f4f4f4 !important;
+                border-color: #ddd !important;
+            }
+
+            @page {
+                margin: 2.2cm;
+            }
+        }
+
+        /* ============================================================
+           12. MICRO-ANIMATIONS & POLISH
+           ============================================================ */
+        .app-bar-logo {
+            transition: transform 0.22s cubic-bezier(.34, 1.56, .64, 1);
+            cursor: default;
+        }
+
+        .app-bar-logo:hover {
+            transform: scale(1.18) rotate(-6deg);
+        }
+
+        .toolbar-btn {
+            transition: background 0.12s, color 0.12s, transform 0.1s !important;
+        }
+
+        .toolbar-btn:active {
+            transform: scale(0.86) !important;
+        }
+
+        .btn {
+            transition: background 0.12s, transform 0.1s, box-shadow 0.12s !important;
+        }
+
+        .btn-primary {
+            box-shadow: var(--shadow-soft);
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--shadow-medium);
+        }
+
+        .overflow-menu-item {
+            transition: background 0.1s, color 0.1s, transform 0.1s;
+        }
+
+        .overflow-menu-item:active {
+            transform: scale(0.97);
+        }
     </style>
 </head>
+
 <body>
 
     <!-- ======== TOP APP BAR ======== -->
@@ -346,6 +1380,9 @@
         <div class="app-bar-spacer"></div>
 
         <div class="app-bar-actions">
+            <button class="btn btn-secondary btn-sm" id="readerModeBtn" title="Reader mode">
+                <i class="fas fa-book-open"></i> Read
+            </button>
             <button class="btn btn-secondary btn-sm" id="uploadBtn" title="Upload MD file">
                 <i class="fas fa-upload"></i> Open
             </button>
@@ -360,13 +1397,50 @@
                     <i class="fas fa-ellipsis-vertical"></i>
                 </button>
                 <div class="overflow-menu" id="overflowMenu">
+                    <button class="overflow-menu-item" id="exportPDFBtn">
+                        <i class="fas fa-file-pdf"></i> Export as PDF
+                    </button>
                     <button class="overflow-menu-item" id="resetSampleBtn">
                         <i class="fas fa-rotate-left"></i> Reset to sample
                     </button>
                     <div class="overflow-divider"></div>
-                    <button class="overflow-menu-item" id="themeToggleBtn">
-                        <i class="fas fa-moon"></i> <span id="themeToggleLabel">Dark mode</span>
-                    </button>
+                    <div class="theme-picker-section">
+                        <div class="theme-picker-label">Theme</div>
+                        <div class="theme-picker">
+                            <div class="theme-card active" data-theme-name="light">
+                                <div class="theme-card-dot"></div>
+                                <div class="theme-card-name">Light</div>
+                            </div>
+                            <div class="theme-card" data-theme-name="dark">
+                                <div class="theme-card-dot"></div>
+                                <div class="theme-card-name">Dark</div>
+                            </div>
+                            <div class="theme-card" data-theme-name="mono">
+                                <div class="theme-card-dot"></div>
+                                <div class="theme-card-name">Mono</div>
+                            </div>
+                            <div class="theme-card" data-theme-name="ocean">
+                                <div class="theme-card-dot"></div>
+                                <div class="theme-card-name">Ocean</div>
+                            </div>
+                            <div class="theme-card" data-theme-name="forest">
+                                <div class="theme-card-dot"></div>
+                                <div class="theme-card-name">Forest</div>
+                            </div>
+                            <div class="theme-card" data-theme-name="sunset">
+                                <div class="theme-card-dot"></div>
+                                <div class="theme-card-name">Sunset</div>
+                            </div>
+                            <div class="theme-card" data-theme-name="candy">
+                                <div class="theme-card-dot"></div>
+                                <div class="theme-card-name">Candy</div>
+                            </div>
+                            <div class="theme-card" data-theme-name="paper">
+                                <div class="theme-card-dot"></div>
+                                <div class="theme-card-name">Paper</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -378,8 +1452,10 @@
     <nav class="command-bar" id="commandBar" role="toolbar" aria-label="Formatting toolbar">
         <!-- Undo/Redo -->
         <div class="toolbar-group">
-            <button class="toolbar-btn" data-command="undo" data-tooltip="Undo (Ctrl+Z)"><i class="fas fa-rotate-left"></i></button>
-            <button class="toolbar-btn" data-command="redo" data-tooltip="Redo (Ctrl+Y)"><i class="fas fa-rotate-right"></i></button>
+            <button class="toolbar-btn" data-command="undo" data-tooltip="Undo (Ctrl+Z)"><i
+                    class="fas fa-rotate-left"></i></button>
+            <button class="toolbar-btn" data-command="redo" data-tooltip="Redo (Ctrl+Y)"><i
+                    class="fas fa-rotate-right"></i></button>
         </div>
 
         <div class="separator" aria-hidden="true"></div>
@@ -405,9 +1481,12 @@
         <!-- Text group -->
         <span class="toolbar-group-label" aria-hidden="true">Text</span>
         <div class="toolbar-group">
-            <button class="toolbar-btn" data-command="bold" data-tooltip="Bold (Ctrl+B)"><i class="fas fa-bold"></i></button>
-            <button class="toolbar-btn" data-command="italic" data-tooltip="Italic (Ctrl+I)"><i class="fas fa-italic"></i></button>
-            <button class="toolbar-btn" data-command="strikeThrough" data-tooltip="Strikethrough"><i class="fas fa-strikethrough"></i></button>
+            <button class="toolbar-btn" data-command="bold" data-tooltip="Bold (Ctrl+B)"><i
+                    class="fas fa-bold"></i></button>
+            <button class="toolbar-btn" data-command="italic" data-tooltip="Italic (Ctrl+I)"><i
+                    class="fas fa-italic"></i></button>
+            <button class="toolbar-btn" data-command="strikeThrough" data-tooltip="Strikethrough"><i
+                    class="fas fa-strikethrough"></i></button>
         </div>
 
         <div class="separator" aria-hidden="true"></div>
@@ -415,10 +1494,14 @@
         <!-- Lists group -->
         <span class="toolbar-group-label" aria-hidden="true">Lists</span>
         <div class="toolbar-group">
-            <button class="toolbar-btn" data-command="insertUnorderedList" data-tooltip="Bullet List"><i class="fas fa-list-ul"></i></button>
-            <button class="toolbar-btn" data-command="insertOrderedList" data-tooltip="Numbered List"><i class="fas fa-list-ol"></i></button>
-            <button class="toolbar-btn" data-command="outdent" data-tooltip="Decrease Indent"><i class="fas fa-outdent"></i></button>
-            <button class="toolbar-btn" data-command="indent" data-tooltip="Increase Indent"><i class="fas fa-indent"></i></button>
+            <button class="toolbar-btn" data-command="insertUnorderedList" data-tooltip="Bullet List"><i
+                    class="fas fa-list-ul"></i></button>
+            <button class="toolbar-btn" data-command="insertOrderedList" data-tooltip="Numbered List"><i
+                    class="fas fa-list-ol"></i></button>
+            <button class="toolbar-btn" data-command="outdent" data-tooltip="Decrease Indent"><i
+                    class="fas fa-outdent"></i></button>
+            <button class="toolbar-btn" data-command="indent" data-tooltip="Increase Indent"><i
+                    class="fas fa-indent"></i></button>
         </div>
 
         <div class="separator" aria-hidden="true"></div>
@@ -426,9 +1509,12 @@
         <!-- Insert group -->
         <span class="toolbar-group-label" aria-hidden="true">Insert</span>
         <div class="toolbar-group">
-            <button class="toolbar-btn" id="insertLinkBtn" data-tooltip="Insert Link"><i class="fas fa-link"></i></button>
-            <button class="toolbar-btn" id="insertImageBtn" data-tooltip="Insert Image"><i class="fas fa-image"></i></button>
-            <button class="toolbar-btn" data-command="insertHorizontalRule" data-tooltip="Horizontal Rule"><i class="fas fa-minus"></i></button>
+            <button class="toolbar-btn" id="insertLinkBtn" data-tooltip="Insert Link"><i
+                    class="fas fa-link"></i></button>
+            <button class="toolbar-btn" id="insertImageBtn" data-tooltip="Insert Image"><i
+                    class="fas fa-image"></i></button>
+            <button class="toolbar-btn" data-command="insertHorizontalRule" data-tooltip="Horizontal Rule"><i
+                    class="fas fa-minus"></i></button>
         </div>
 
         <div class="separator" aria-hidden="true"></div>
@@ -459,6 +1545,20 @@
         </div>
     </footer>
 
+    <!-- ======== READER MODE OVERLAY ======== -->
+    <div class="reader-mode-overlay" id="readerModeOverlay" role="dialog" aria-label="Reader mode">
+        <div class="reader-progress" id="readerProgress"></div>
+        <div class="reader-mode-bar" id="readerModeBar">
+            <div class="reader-mode-bar-pill">
+                <i class="fas fa-book-open"></i> Reader Mode
+            </div>
+            <button class="reader-exit-pill" id="closeReaderModeBtn">
+                <i class="fas fa-xmark"></i> Exit Reader
+            </button>
+        </div>
+        <div class="reader-mode-content" id="readerModeContent"></div>
+    </div>
+
     <!-- ======== TOAST CONTAINER ======== -->
     <div class="toast-container" id="toastContainer"></div>
 
@@ -472,7 +1572,8 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label class="form-label" for="linkURL">URL</label>
-                    <input class="form-input" type="url" id="linkURL" placeholder="https://example.com" autocomplete="off">
+                    <input class="form-input" type="url" id="linkURL" placeholder="https://example.com"
+                        autocomplete="off">
                 </div>
             </div>
             <div class="modal-footer">
@@ -492,11 +1593,13 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label class="form-label" for="imageURL">Image URL</label>
-                    <input class="form-input" type="url" id="imageURL" placeholder="https://example.com/photo.jpg" autocomplete="off">
+                    <input class="form-input" type="url" id="imageURL" placeholder="https://example.com/photo.jpg"
+                        autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="imageAlt">Alt text</label>
-                    <input class="form-input" type="text" id="imageAlt" placeholder="Describe the image" autocomplete="off">
+                    <input class="form-input" type="text" id="imageAlt" placeholder="Describe the image"
+                        autocomplete="off">
                 </div>
             </div>
             <div class="modal-footer">
@@ -508,58 +1611,57 @@
 
     <!-- ======== JAVASCRIPT ======== -->
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
 
-        /* ==========================================================
-           DOM REFERENCES & SETUP
-           ========================================================== */
-        const $ = sel => document.querySelector(sel);
-        const $$ = sel => [...document.querySelectorAll(sel)];
+            /* ==========================================================
+               DOM REFERENCES & SETUP
+               ========================================================== */
+            const $ = sel => document.querySelector(sel);
+            const $$ = sel => [...document.querySelectorAll(sel)];
 
-        const visualEditor = $('#visualEditor');
-        const wordCountText = $('#wordCount');
-        
-        // Buttons
-        const uploadBtn = $('#uploadBtn');
-        const downloadBtn = $('#downloadBtn');
-        const fileInput = $('#fileInput');
-        const themeToggleBtn = $('#themeToggleBtn');
-        const resetSampleBtn = $('#resetSampleBtn');
-        const overflowMenuBtn = $('#overflowMenuBtn');
-        const overflowMenu = $('#overflowMenu');
+            const visualEditor = $('#visualEditor');
+            const wordCountText = $('#wordCount');
 
-        // Toolbar
-        const commandBar = $('#commandBar');
-        const blockFormatSelect = $('#blockFormatSelect');
-        const clearFormatBtn = $('#clearFormatBtn');
-        const insertLinkBtn = $('#insertLinkBtn');
-        const insertImageBtn = $('#insertImageBtn');
+            // Buttons
+            const uploadBtn = $('#uploadBtn');
+            const downloadBtn = $('#downloadBtn');
+            const fileInput = $('#fileInput');
+            const resetSampleBtn = $('#resetSampleBtn');
+            const overflowMenuBtn = $('#overflowMenuBtn');
+            const overflowMenu = $('#overflowMenu');
 
-        // Modals
-        const linkModal = $('#linkModal');
-        const imageModal = $('#imageModal');
-        const confirmLinkBtn = $('#confirmLinkBtn');
-        const confirmImageBtn = $('#confirmImageBtn');
-        const linkURLInput = $('#linkURL');
-        const imageURLInput = $('#imageURL');
-        const imageAltInput = $('#imageAlt');
+            // Toolbar
+            const commandBar = $('#commandBar');
+            const blockFormatSelect = $('#blockFormatSelect');
+            const clearFormatBtn = $('#clearFormatBtn');
+            const insertLinkBtn = $('#insertLinkBtn');
+            const insertImageBtn = $('#insertImageBtn');
 
-        let savedSelectionRange = null;
+            // Modals
+            const linkModal = $('#linkModal');
+            const imageModal = $('#imageModal');
+            const confirmLinkBtn = $('#confirmLinkBtn');
+            const confirmImageBtn = $('#confirmImageBtn');
+            const linkURLInput = $('#linkURL');
+            const imageURLInput = $('#imageURL');
+            const imageAltInput = $('#imageAlt');
 
-        // Turndown setup for HTML -> Markdown conversion
-        const turndownService = new window.TurndownService({
-            headingStyle: 'atx',
-            codeBlockStyle: 'fenced',
-            emDelimiter: '*'
-        });
-        
-        // Add rule for strikethrough mapping
-        turndownService.addRule('strikethrough', {
-            filter: ['del', 's', 'strike'],
-            replacement: (content) => `~~${content}~~`
-        });
+            let savedSelectionRange = null;
 
-        const SAMPLE_MD = `# Welcome to WYSIWYG MD
+            // Turndown setup for HTML -> Markdown conversion
+            const turndownService = new window.TurndownService({
+                headingStyle: 'atx',
+                codeBlockStyle: 'fenced',
+                emDelimiter: '*'
+            });
+
+            // Add rule for strikethrough mapping
+            turndownService.addRule('strikethrough', {
+                filter: ['del', 's', 'strike'],
+                replacement: (content) => `~~${content}~~`
+            });
+
+            const SAMPLE_MD = `# Welcome to WYSIWYG MD
 
 This is a **pure Markdown editor** that lets you format text visually. No need to write syntax manually!
 
@@ -587,221 +1689,291 @@ function greet(name) {
 
 Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\` file into this window to edit it directly!`;
 
-        /* ==========================================================
-           UTILITIES
-           ========================================================== */
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-            const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
-            toast.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> ${message}`;
-            $('#toastContainer').appendChild(toast);
-            requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
-            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 200); }, 2500);
-        }
+            /* ==========================================================
+               UTILITIES
+               ========================================================== */
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+                toast.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> ${message}`;
+                $('#toastContainer').appendChild(toast);
+                requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
+                setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 200); }, 2500);
+            }
 
-        function toggleTheme() {
-            const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-            document.documentElement.dataset.theme = next;
-            localStorage.setItem('md-theme', next);
-            $('#themeToggleLabel').textContent = next === 'dark' ? 'Light mode' : 'Dark mode';
-            themeToggleBtn.querySelector('i').className = next === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-        }
+            function setTheme(name) {
+                document.documentElement.dataset.theme = name;
+                localStorage.setItem('md-theme', name);
+                $$('.theme-card').forEach(s => s.classList.toggle('active', s.dataset.themeName === name));
+            }
 
-        function initTheme() {
-            const saved = localStorage.getItem('md-theme');
-            if (saved) document.documentElement.dataset.theme = saved;
-            else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.dataset.theme = 'dark';
-            
-            const isDark = document.documentElement.dataset.theme === 'dark';
-            $('#themeToggleLabel').textContent = isDark ? 'Light mode' : 'Dark mode';
-            themeToggleBtn.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-        }
+            function initTheme() {
+                const saved = localStorage.getItem('md-theme') ||
+                    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                setTheme(saved);
+            }
 
-        function updateWordCount() {
-            const text = visualEditor.innerText || '';
-            const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
-            wordCountText.textContent = `${words} word${words === 1 ? '' : 's'}`;
-        }
+            function toggleReaderMode() {
+                const overlay = $('#readerModeOverlay');
+                const content = $('#readerModeContent');
+                const bar = $('#readerModeBar');
+                const progress = $('#readerProgress');
 
-        /* ==========================================================
-           CORE LOGIC (MD <-> HTML)
-           ========================================================== */
-        function loadMarkdown(mdText) {
-            visualEditor.innerHTML = marked.parse(mdText);
-            updateWordCount();
-        }
+                // Copy editor content, mark first h1 for no top margin
+                content.innerHTML = visualEditor.innerHTML;
+                const firstH1 = content.querySelector('h1');
+                if (firstH1) firstH1.classList.add('reader-first-h1');
 
-        function getMarkdown() {
-            return turndownService.turndown(visualEditor.innerHTML);
-        }
+                overlay.classList.add('show');
+                overflowMenu.classList.remove('show');
+                overlay.scrollTop = 0;
+                progress.style.width = '0%';
+                bar.classList.remove('hidden');
 
-        function downloadFile() {
-            const md = getMarkdown();
-            const blob = new Blob([md], { type: 'text/markdown' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'document.md';
-            a.click();
-            URL.revokeObjectURL(a.href);
-            showToast('Saved as document.md', 'success');
-        }
+                // Progress bar + auto-hide header on scroll
+                let hideTimer;
+                function onReaderScroll() {
+                    const el = overlay;
+                    const scrolled = el.scrollTop;
+                    const total = el.scrollHeight - el.clientHeight;
+                    progress.style.width = total > 0 ? (scrolled / total * 100) + '%' : '0%';
 
-        function handleFile(file) {
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                loadMarkdown(e.target.result);
-                showToast(`Loaded ${file.name}`, 'success');
-            };
-            reader.readAsText(file);
-        }
+                    // Show bar briefly on scroll
+                    bar.classList.remove('hidden');
+                    clearTimeout(hideTimer);
+                    hideTimer = setTimeout(() => { if (overlay.scrollTop > 80) bar.classList.add('hidden'); }, 2000);
+                }
 
-        /* ==========================================================
-           EDITOR EXECUTION & TOOLBAR STATE
-           ========================================================== */
-        function executeCommand(command, value = null) {
-            visualEditor.focus();
-            document.execCommand(command, false, value);
-            updateToolbarState();
-            updateWordCount();
-        }
+                // Re-attach scroll listener each open
+                overlay._scrollHandler && overlay.removeEventListener('scroll', overlay._scrollHandler);
+                overlay._scrollHandler = onReaderScroll;
+                overlay.addEventListener('scroll', onReaderScroll);
 
-        function updateToolbarState() {
-            const toggleCommands = ['bold','italic','strikeThrough','insertUnorderedList','insertOrderedList'];
-            
-            $$('[data-command]').forEach(btn => {
-                const cmd = btn.dataset.command;
-                if (toggleCommands.includes(cmd)) {
-                    try { btn.classList.toggle('active', document.queryCommandState(cmd)); }
-                    catch { btn.classList.remove('active'); }
+                // Show header on mouse move at top of screen
+                function onReaderMouseMove(e) {
+                    if (e.clientY < 80) {
+                        bar.classList.remove('hidden');
+                        clearTimeout(hideTimer);
+                        hideTimer = setTimeout(() => { if (overlay.scrollTop > 80) bar.classList.add('hidden'); }, 2500);
+                    }
+                }
+                overlay._moveHandler && overlay.removeEventListener('mousemove', overlay._moveHandler);
+                overlay._moveHandler = onReaderMouseMove;
+                overlay.addEventListener('mousemove', onReaderMouseMove);
+            }
+
+            function closeReaderMode() {
+                const overlay = $('#readerModeOverlay');
+                overlay.classList.remove('show');
+                // Clean up
+                overlay._scrollHandler && overlay.removeEventListener('scroll', overlay._scrollHandler);
+                overlay._moveHandler && overlay.removeEventListener('mousemove', overlay._moveHandler);
+            }
+
+            function exportPDF() {
+                overflowMenu.classList.remove('show');
+                showToast('Opening print dialog…', 'info');
+                setTimeout(() => window.print(), 350);
+            }
+
+            function updateWordCount() {
+                const text = visualEditor.innerText || '';
+                const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+                wordCountText.textContent = `${words} word${words === 1 ? '' : 's'}`;
+            }
+
+            /* ==========================================================
+               CORE LOGIC (MD <-> HTML)
+               ========================================================== */
+            function loadMarkdown(mdText) {
+                visualEditor.innerHTML = marked.parse(mdText);
+                updateWordCount();
+            }
+
+            function getMarkdown() {
+                return turndownService.turndown(visualEditor.innerHTML);
+            }
+
+            function downloadFile() {
+                const md = getMarkdown();
+                const blob = new Blob([md], { type: 'text/markdown' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'document.md';
+                a.click();
+                URL.revokeObjectURL(a.href);
+                showToast('Saved as document.md', 'success');
+            }
+
+            function handleFile(file) {
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    loadMarkdown(e.target.result);
+                    showToast(`Loaded ${file.name}`, 'success');
+                };
+                reader.readAsText(file);
+            }
+
+            /* ==========================================================
+               EDITOR EXECUTION & TOOLBAR STATE
+               ========================================================== */
+            function executeCommand(command, value = null) {
+                visualEditor.focus();
+                document.execCommand(command, false, value);
+                updateToolbarState();
+                updateWordCount();
+            }
+
+            function updateToolbarState() {
+                const toggleCommands = ['bold', 'italic', 'strikeThrough', 'insertUnorderedList', 'insertOrderedList'];
+
+                $$('[data-command]').forEach(btn => {
+                    const cmd = btn.dataset.command;
+                    if (toggleCommands.includes(cmd)) {
+                        try { btn.classList.toggle('active', document.queryCommandState(cmd)); }
+                        catch { btn.classList.remove('active'); }
+                    }
+                });
+
+                // Block format status mapping
+                try {
+                    let block = document.queryCommandValue('formatBlock');
+                    if (block) {
+                        block = block.replace(/[<>]/g, '').toLowerCase();
+                        blockFormatSelect.value = Array.from(blockFormatSelect.options).some(o => o.value === block) ? block : 'p';
+                    } else {
+                        blockFormatSelect.value = 'p';
+                    }
+                } catch { blockFormatSelect.value = 'p'; }
+            }
+
+            /* ==========================================================
+               SELECTION & MODALS
+               ========================================================== */
+            function saveSelection() {
+                const sel = window.getSelection();
+                if (sel.getRangeAt && sel.rangeCount) {
+                    savedSelectionRange = sel.getRangeAt(0).cloneRange();
+                }
+            }
+
+            function restoreSelection() {
+                if (savedSelectionRange) {
+                    const sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(savedSelectionRange);
+                }
+            }
+
+            function openModal(modal) {
+                saveSelection();
+                modal.classList.add('show');
+                setTimeout(() => modal.querySelector('.form-input')?.focus(), 80);
+            }
+
+            function closeModal(modal) {
+                modal.classList.remove('show');
+                modal.querySelectorAll('.form-input').forEach(i => i.value = '');
+                visualEditor.focus();
+                restoreSelection();
+            }
+
+            /* ==========================================================
+               EVENT LISTENERS
+               ========================================================== */
+
+            // Editor interaction
+            visualEditor.addEventListener('input', updateWordCount);
+            visualEditor.addEventListener('keyup', updateToolbarState);
+            visualEditor.addEventListener('mouseup', updateToolbarState);
+
+            // Toolbar Buttons
+            commandBar.addEventListener('click', (e) => {
+                const btn = e.target.closest('.toolbar-btn[data-command]');
+                if (btn) executeCommand(btn.dataset.command);
+            });
+
+            // Block Format Change
+            blockFormatSelect.addEventListener('change', (e) => {
+                const val = e.target.value;
+                executeCommand('formatBlock', val);
+            });
+
+            // Clear format
+            clearFormatBtn.addEventListener('click', () => executeCommand('removeFormat'));
+
+            // Upload / Download logic
+            uploadBtn.addEventListener('click', () => fileInput.click());
+            downloadBtn.addEventListener('click', downloadFile);
+            fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+
+            // Drag & Drop
+            visualEditor.addEventListener('dragover', e => e.preventDefault());
+            visualEditor.addEventListener('drop', e => {
+                if (e.dataTransfer.files.length > 0) {
+                    e.preventDefault();
+                    handleFile(e.dataTransfer.files[0]);
                 }
             });
 
-            // Block format status mapping
-            try {
-                let block = document.queryCommandValue('formatBlock');
-                if (block) {
-                    block = block.replace(/[<>]/g, '').toLowerCase();
-                    blockFormatSelect.value = Array.from(blockFormatSelect.options).some(o => o.value === block) ? block : 'p';
-                } else {
-                    blockFormatSelect.value = 'p';
+            // Top right menu
+            overflowMenuBtn.addEventListener('click', e => { e.stopPropagation(); overflowMenu.classList.toggle('show'); });
+            document.addEventListener('click', e => { if (!overflowMenu.contains(e.target) && e.target !== overflowMenuBtn) overflowMenu.classList.remove('show'); });
+
+            // Theme cards
+            $$('.theme-card').forEach(card => {
+                card.addEventListener('click', () => setTheme(card.dataset.themeName));
+            });
+
+            resetSampleBtn.addEventListener('click', () => { loadMarkdown(SAMPLE_MD); overflowMenu.classList.remove('show'); showToast('Reset to sample'); });
+
+            // Reader mode
+            $('#readerModeBtn').addEventListener('click', toggleReaderMode);
+            $('#closeReaderModeBtn').addEventListener('click', closeReaderMode);
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReaderMode(); });
+
+            // PDF export
+            $('#exportPDFBtn').addEventListener('click', exportPDF);
+
+            // Modals
+            insertLinkBtn.addEventListener('click', () => openModal(linkModal));
+            insertImageBtn.addEventListener('click', () => openModal(imageModal));
+
+            $$('[data-close-modal]').forEach(btn => btn.addEventListener('click', e => closeModal(e.target.closest('.modal-overlay'))));
+
+            confirmLinkBtn.addEventListener('click', () => {
+                const url = linkURLInput.value.trim();
+                if (url) {
+                    restoreSelection();
+                    executeCommand('createLink', url);
                 }
-            } catch { blockFormatSelect.value = 'p'; }
-        }
+                closeModal(linkModal);
+            });
 
-        /* ==========================================================
-           SELECTION & MODALS
-           ========================================================== */
-        function saveSelection() {
-            const sel = window.getSelection();
-            if (sel.getRangeAt && sel.rangeCount) {
-                savedSelectionRange = sel.getRangeAt(0).cloneRange();
-            }
-        }
+            confirmImageBtn.addEventListener('click', () => {
+                const url = imageURLInput.value.trim();
+                const alt = imageAltInput.value.trim() || 'Image';
+                if (url) {
+                    restoreSelection();
+                    const imgHTML = `<img src="${url}" alt="${alt}" />`;
+                    executeCommand('insertHTML', imgHTML);
+                }
+                closeModal(imageModal);
+            });
 
-        function restoreSelection() {
-            if (savedSelectionRange) {
-                const sel = window.getSelection();
-                sel.removeAllRanges();
-                sel.addRange(savedSelectionRange);
-            }
-        }
+            // Initialize
+            initTheme();
+            loadMarkdown(SAMPLE_MD);
 
-        function openModal(modal) {
-            saveSelection();
-            modal.classList.add('show');
-            setTimeout(() => modal.querySelector('.form-input')?.focus(), 80);
-        }
+            // Keep editor focused when clicking empty space
+            $('#editorContainer').addEventListener('click', (e) => {
+                if (e.target === $('#editorContainer')) visualEditor.focus();
+            });
 
-        function closeModal(modal) {
-            modal.classList.remove('show');
-            modal.querySelectorAll('.form-input').forEach(i => i.value = '');
-            visualEditor.focus();
-            restoreSelection();
-        }
-
-        /* ==========================================================
-           EVENT LISTENERS
-           ========================================================== */
-        
-        // Editor interaction
-        visualEditor.addEventListener('input', updateWordCount);
-        visualEditor.addEventListener('keyup', updateToolbarState);
-        visualEditor.addEventListener('mouseup', updateToolbarState);
-
-        // Toolbar Buttons
-        commandBar.addEventListener('click', (e) => {
-            const btn = e.target.closest('.toolbar-btn[data-command]');
-            if (btn) executeCommand(btn.dataset.command);
         });
-
-        // Block Format Change
-        blockFormatSelect.addEventListener('change', (e) => {
-            const val = e.target.value;
-            executeCommand('formatBlock', val);
-        });
-        
-        // Clear format
-        clearFormatBtn.addEventListener('click', () => executeCommand('removeFormat'));
-
-        // Upload / Download logic
-        uploadBtn.addEventListener('click', () => fileInput.click());
-        downloadBtn.addEventListener('click', downloadFile);
-        fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
-
-        // Drag & Drop
-        visualEditor.addEventListener('dragover', e => e.preventDefault());
-        visualEditor.addEventListener('drop', e => {
-            if (e.dataTransfer.files.length > 0) {
-                e.preventDefault();
-                handleFile(e.dataTransfer.files[0]);
-            }
-        });
-
-        // Top right menu
-        overflowMenuBtn.addEventListener('click', e => { e.stopPropagation(); overflowMenu.classList.toggle('show'); });
-        document.addEventListener('click', e => { if (!overflowMenu.contains(e.target) && e.target !== overflowMenuBtn) overflowMenu.classList.remove('show'); });
-        
-        themeToggleBtn.addEventListener('click', toggleTheme);
-        resetSampleBtn.addEventListener('click', () => { loadMarkdown(SAMPLE_MD); overflowMenu.classList.remove('show'); showToast('Reset to sample'); });
-
-        // Modals
-        insertLinkBtn.addEventListener('click', () => openModal(linkModal));
-        insertImageBtn.addEventListener('click', () => openModal(imageModal));
-
-        $$('[data-close-modal]').forEach(btn => btn.addEventListener('click', e => closeModal(e.target.closest('.modal-overlay'))));
-
-        confirmLinkBtn.addEventListener('click', () => {
-            const url = linkURLInput.value.trim();
-            if (url) {
-                restoreSelection();
-                executeCommand('createLink', url);
-            }
-            closeModal(linkModal);
-        });
-
-        confirmImageBtn.addEventListener('click', () => {
-            const url = imageURLInput.value.trim();
-            const alt = imageAltInput.value.trim() || 'Image';
-            if (url) {
-                restoreSelection();
-                const imgHTML = `<img src="${url}" alt="${alt}" />`;
-                executeCommand('insertHTML', imgHTML);
-            }
-            closeModal(imageModal);
-        });
-
-        // Initialize
-        initTheme();
-        loadMarkdown(SAMPLE_MD);
-
-        // Keep editor focused when clicking empty space
-        $('#editorContainer').addEventListener('click', (e) => {
-            if (e.target === $('#editorContainer')) visualEditor.focus();
-        });
-
-    });
     </script>
 </body>
+
 </html>
