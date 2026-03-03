@@ -36,8 +36,13 @@
           "accept": [
             ".md",
             ".markdown",
+            ".txt",
             "text/markdown",
-            "text/plain"
+            "text/plain",
+            "text/*",
+            "application/octet-stream",
+            "application/x-markdown",
+            "*/*"
           ]
         }
       ]

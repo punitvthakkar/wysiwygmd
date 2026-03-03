@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wymd-v1';
+const CACHE_NAME = 'wymd-v2';
 const ASSETS = [
     '/wysiwygmd/',
     '/wysiwygmd/index.html',
