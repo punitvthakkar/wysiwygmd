@@ -2126,7 +2126,40 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
 
             // Initialize
             initTheme();
-            loadMarkdown(SAMPLE_MD);
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('loadShared') === 'true') {
+                const request = indexedDB.open('wymd_share_db', 1);
+                request.onsuccess = (e) => {
+                    const db = e.target.result;
+                    if (db.objectStoreNames.contains('shared_files')) {
+                        const tx = db.transaction('shared_files', 'readwrite');
+                        const store = tx.objectStore('shared_files');
+                        const getReq = store.get('latest_shared_file');
+                        getReq.onsuccess = async () => {
+                            const file = getReq.result;
+                            if (file) {
+                                const text = await file.text();
+                                loadMarkdown(text);
+                                store.delete('latest_shared_file');
+                                showToast('Loaded shared file', 'success');
+                                window.history.replaceState({}, document.title, window.location.pathname);
+                            } else {
+                                loadMarkdown(SAMPLE_MD);
+                            }
+                        };
+                        getReq.onerror = () => loadMarkdown(SAMPLE_MD);
+                    } else {
+                        loadMarkdown(SAMPLE_MD);
+                    }
+                };
+                request.onerror = () => loadMarkdown(SAMPLE_MD);
+            } else {
+                loadMarkdown(SAMPLE_MD);
+            }
+            if (urlParams.get('error') === 'share_failed') {
+                showToast('Failed to load shared file', 'error');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
 
             // Keep editor focused when clicking empty space
             $('#editorContainer').addEventListener('click', (e) => {
