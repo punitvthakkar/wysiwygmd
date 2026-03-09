@@ -611,6 +611,26 @@
             transition: 0.1s;
         }
 
+        .command-bar .toolbar-color {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-surface);
+            overflow: hidden;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .command-bar .toolbar-color input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+            padding: 0;
+            cursor: pointer;
+        }
+
         /* Tooltip */
         .command-bar .toolbar-btn[data-tooltip]::after {
             content: attr(data-tooltip);
@@ -745,9 +765,33 @@
             max-width: 100%;
             height: auto;
             display: block;
-            margin: 1.5em 0;
+            margin: 1.5em auto;
             border-radius: var(--radius-md);
             box-shadow: var(--shadow-soft);
+        }
+
+        #visualEditor img[data-align="left"] {
+            margin-left: 0;
+            margin-right: auto;
+        }
+
+        #visualEditor img[data-align="center"] {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #visualEditor img[data-align="right"] {
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+        #visualEditor img[data-align="full"] {
+            width: 100%;
+        }
+
+        #visualEditor img.md-selected-image {
+            outline: 3px solid var(--accent-primary);
+            outline-offset: 4px;
         }
 
         #visualEditor pre {
@@ -780,6 +824,47 @@
             border: none;
             border-top: 2px dashed var(--border-subtle);
             margin: 2em 0;
+        }
+
+        #visualEditor ul[data-task-list="true"] {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        #visualEditor ul[data-task-list="true"] li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65em;
+        }
+
+        #visualEditor input[data-task-checkbox="true"] {
+            margin-top: 0.28em;
+            accent-color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        #visualEditor table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5em 0;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+        }
+
+        #visualEditor th,
+        #visualEditor td {
+            border: 1px solid var(--border-subtle);
+            padding: 0.75em 0.9em;
+            vertical-align: top;
+            min-width: 120px;
+        }
+
+        #visualEditor th {
+            background: var(--bg-inset);
+            text-align: left;
+            font-weight: 600;
         }
 
         /* ============================================================
@@ -995,6 +1080,11 @@
         .form-input:focus {
             border-color: var(--accent-primary);
             box-shadow: 0 0 0 3px var(--accent-primary-soft);
+        }
+
+        .form-help {
+            font: var(--text-meta);
+            color: var(--text-muted);
         }
 
         .modal-footer {
@@ -1262,6 +1352,25 @@
             box-shadow: var(--shadow-medium);
         }
 
+        .reader-mode-content img[data-align="left"] {
+            margin-left: 0;
+            margin-right: auto;
+        }
+
+        .reader-mode-content img[data-align="center"] {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .reader-mode-content img[data-align="right"] {
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+        .reader-mode-content img[data-align="full"] {
+            width: 100%;
+        }
+
         .reader-mode-content a {
             color: var(--accent-primary);
             text-decoration: underline;
@@ -1276,6 +1385,44 @@
             border: none;
             border-top: 1px solid var(--border-subtle);
             margin: 3em 0;
+        }
+
+        .reader-mode-content ul[data-task-list="true"] {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .reader-mode-content ul[data-task-list="true"] li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65em;
+        }
+
+        .reader-mode-content input[data-task-checkbox="true"] {
+            margin-top: 0.28em;
+            accent-color: var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        .reader-mode-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2em 0;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .reader-mode-content th,
+        .reader-mode-content td {
+            border: 1px solid var(--border-subtle);
+            padding: 0.9em 1em;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .reader-mode-content th {
+            background: var(--bg-inset);
+            font-weight: 600;
         }
 
         .reader-first-h1 {
@@ -1648,6 +1795,18 @@
                     class="fas fa-italic"></i></button>
             <button class="toolbar-btn" data-command="strikeThrough" data-tooltip="Strikethrough"><i
                     class="fas fa-strikethrough"></i></button>
+            <button class="toolbar-btn" id="inlineCodeBtn" data-tooltip="Inline Code"><i class="fas fa-code"></i></button>
+        </div>
+
+        <div class="separator" aria-hidden="true"></div>
+
+        <span class="toolbar-group-label" aria-hidden="true">Style</span>
+        <div class="toolbar-group">
+            <label class="toolbar-color" title="Text color (saved as HTML)">
+                <input type="color" id="textColorInput" value="#6366f1" aria-label="Text color">
+            </label>
+            <button class="toolbar-btn" id="clearTextColorBtn" data-tooltip="Clear Text Color"><i
+                    class="fas fa-droplet-slash"></i></button>
         </div>
 
         <div class="separator" aria-hidden="true"></div>
@@ -1659,6 +1818,8 @@
                     class="fas fa-list-ul"></i></button>
             <button class="toolbar-btn" data-command="insertOrderedList" data-tooltip="Numbered List"><i
                     class="fas fa-list-ol"></i></button>
+            <button class="toolbar-btn" id="insertTaskListBtn" data-tooltip="Task List"><i
+                    class="fas fa-list-check"></i></button>
             <button class="toolbar-btn" data-command="outdent" data-tooltip="Decrease Indent"><i
                     class="fas fa-outdent"></i></button>
             <button class="toolbar-btn" data-command="indent" data-tooltip="Increase Indent"><i
@@ -1674,8 +1835,24 @@
                     class="fas fa-link"></i></button>
             <button class="toolbar-btn" id="insertImageBtn" data-tooltip="Insert Image"><i
                     class="fas fa-image"></i></button>
+            <button class="toolbar-btn" id="insertTableBtn" data-tooltip="Insert Table"><i
+                    class="fas fa-table"></i></button>
             <button class="toolbar-btn" data-command="insertHorizontalRule" data-tooltip="Horizontal Rule"><i
                     class="fas fa-minus"></i></button>
+        </div>
+
+        <div class="separator" aria-hidden="true"></div>
+
+        <span class="toolbar-group-label" aria-hidden="true">Image</span>
+        <div class="toolbar-group">
+            <button class="toolbar-btn" id="alignImageLeftBtn" data-tooltip="Align Image Left"><i
+                    class="fas fa-align-left"></i></button>
+            <button class="toolbar-btn" id="alignImageCenterBtn" data-tooltip="Align Image Center"><i
+                    class="fas fa-align-center"></i></button>
+            <button class="toolbar-btn" id="alignImageRightBtn" data-tooltip="Align Image Right"><i
+                    class="fas fa-align-right"></i></button>
+            <button class="toolbar-btn" id="alignImageFullBtn" data-tooltip="Make Image Full Width"><i
+                    class="fas fa-expand"></i></button>
         </div>
 
         <div class="separator" aria-hidden="true"></div>
@@ -1762,6 +1939,17 @@
                     <input class="form-input" type="text" id="imageAlt" placeholder="Describe the image"
                         autocomplete="off">
                 </div>
+                <div class="form-group">
+                    <label class="form-label" for="imageAlign">Alignment</label>
+                    <select class="form-input" id="imageAlign">
+                        <option value="">Default</option>
+                        <option value="left">Left</option>
+                        <option value="center">Center</option>
+                        <option value="right">Right</option>
+                        <option value="full">Full width</option>
+                    </select>
+                </div>
+                <p class="form-help">Font color and explicit image alignment are saved as raw HTML inside the Markdown file.</p>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-close-modal>Cancel</button>
@@ -1773,7 +1961,6 @@
     <!-- ======== JAVASCRIPT ======== -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
             /* ==========================================================
                DOM REFERENCES & SETUP
                ========================================================== */
@@ -1797,6 +1984,17 @@
             const clearFormatBtn = $('#clearFormatBtn');
             const insertLinkBtn = $('#insertLinkBtn');
             const insertImageBtn = $('#insertImageBtn');
+            const insertTableBtn = $('#insertTableBtn');
+            const insertTaskListBtn = $('#insertTaskListBtn');
+            const inlineCodeBtn = $('#inlineCodeBtn');
+            const textColorInput = $('#textColorInput');
+            const clearTextColorBtn = $('#clearTextColorBtn');
+            const imageAlignmentButtons = {
+                left: $('#alignImageLeftBtn'),
+                center: $('#alignImageCenterBtn'),
+                right: $('#alignImageRightBtn'),
+                full: $('#alignImageFullBtn')
+            };
 
             // Modals
             const linkModal = $('#linkModal');
@@ -1806,20 +2004,55 @@
             const linkURLInput = $('#linkURL');
             const imageURLInput = $('#imageURL');
             const imageAltInput = $('#imageAlt');
+            const imageAlignInput = $('#imageAlign');
 
             let savedSelectionRange = null;
+            let selectedImage = null;
+            let embeddedImageReferences = [];
+            let embeddedImageReferenceBySrc = new Map();
 
-            // Turndown setup for HTML -> Markdown conversion
+            window.marked.setOptions({ gfm: true });
+
             const turndownService = new window.TurndownService({
                 headingStyle: 'atx',
                 codeBlockStyle: 'fenced',
                 emDelimiter: '*'
             });
 
-            // Add rule for strikethrough mapping
             turndownService.addRule('strikethrough', {
                 filter: ['del', 's', 'strike'],
-                replacement: (content) => `~~${content}~~`
+                replacement: content => `~~${content}~~`
+            });
+
+            turndownService.addRule('textColorSpan', {
+                filter: node => node.nodeName === 'SPAN' && node.getAttribute('data-md-color'),
+                replacement: (content, node) => serializeHtmlNode(node)
+            });
+
+            turndownService.addRule('alignedImage', {
+                filter: node => node.nodeName === 'IMG' && node.getAttribute('data-align'),
+                replacement: (content, node) => `\n${serializeHtmlNode(node)}\n`
+            });
+
+            turndownService.addRule('embeddedDataImageReference', {
+                filter: node => node.nodeName === 'IMG' &&
+                    !node.getAttribute('data-align') &&
+                    (node.getAttribute('src') || '').startsWith('data:image/'),
+                replacement: (content, node) => {
+                    const ref = registerEmbeddedImageReference(node);
+                    const alt = escapeMarkdownAltText(node.getAttribute('alt') || 'Image');
+                    return `![${alt}][${ref.label}]`;
+                }
+            });
+
+            turndownService.addRule('taskList', {
+                filter: node => node.nodeName === 'UL' && node.getAttribute('data-task-list') === 'true',
+                replacement: (content, node) => `\n${serializeTaskList(node)}\n`
+            });
+
+            turndownService.addRule('markdownTable', {
+                filter: node => node.nodeName === 'TABLE',
+                replacement: (content, node) => `\n${serializeTable(node)}\n`
             });
 
             const SAMPLE_MD = `# Welcome to WYSIWYG MD
@@ -1830,7 +2063,7 @@ This is a **pure Markdown editor** that lets you format text visually. No need t
 
 *   **Live Visual Editing:** Edit exactly what your content looks like.
 *   **Pure Markdown Export:** Behind the scenes, it generates clean \`.md\` files.
-*   **Standard Formatting:** Supports *italics*, **bold**, and ~~strikethrough~~.
+*   **Standard Formatting:** Supports *italics*, **bold**, ~~strikethrough~~, task lists, tables, and \`inline code\`.
 
 ### Block elements
 
@@ -1846,9 +2079,19 @@ function greet(name) {
 }
 \`\`\`
 
+### Tasks
+
+- [x] Paste images directly from your clipboard
+- [ ] Try the image alignment tools
+
+| Format | Saved as |
+| --- | --- |
+| Bold | Markdown |
+| Font color | HTML inside Markdown |
+
 ---
 
-Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\` file into this window to edit it directly!`;
+Try inserting a [Link to Google](https://google.com), a color span, or dragging a local \`.md\` file into this window to edit it directly!`;
 
             /* ==========================================================
                UTILITIES
@@ -1860,7 +2103,10 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
                 toast.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> ${message}`;
                 $('#toastContainer').appendChild(toast);
                 requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
-                setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 200); }, 2500);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 200);
+                }, 2500);
             }
 
             function setTheme(name) {
@@ -1875,14 +2121,468 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
                 setTheme(saved);
             }
 
+            function isNodeInsideEditor(node) {
+                if (!node) return false;
+                const target = node.nodeType === Node.TEXT_NODE ? node.parentNode : node;
+                return visualEditor.contains(target);
+            }
+
+            function getSelectionAnchorElement() {
+                const sel = window.getSelection();
+                if (!sel.rangeCount) return null;
+                const node = sel.anchorNode;
+                return node?.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+            }
+
+            function getClosestFromSelection(selector) {
+                return getSelectionAnchorElement()?.closest(selector) || null;
+            }
+
+            function saveSelection() {
+                const sel = window.getSelection();
+                if (sel.getRangeAt && sel.rangeCount && isNodeInsideEditor(sel.anchorNode)) {
+                    savedSelectionRange = sel.getRangeAt(0).cloneRange();
+                }
+            }
+
+            function restoreSelection() {
+                if (!savedSelectionRange) return false;
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(savedSelectionRange);
+                return true;
+            }
+
+            function getEditorRangeOrEnd() {
+                const sel = window.getSelection();
+                if (sel.rangeCount && isNodeInsideEditor(sel.anchorNode)) {
+                    return sel.getRangeAt(0);
+                }
+
+                const range = document.createRange();
+                range.selectNodeContents(visualEditor);
+                range.collapse(false);
+                return range;
+            }
+
+            function setRange(range) {
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+
+            function placeCaret(node, offset = 0) {
+                const range = document.createRange();
+                range.setStart(node, offset);
+                range.collapse(true);
+                setRange(range);
+            }
+
+            function placeCaretAtEnd(node) {
+                const range = document.createRange();
+                range.selectNodeContents(node);
+                range.collapse(false);
+                setRange(range);
+            }
+
+            function unwrapElement(element) {
+                if (!element || !element.parentNode) return;
+                const parent = element.parentNode;
+                while (element.firstChild) {
+                    parent.insertBefore(element.firstChild, element);
+                }
+                parent.removeChild(element);
+            }
+
+            function normalizeHexColor(colorValue) {
+                if (!colorValue) return null;
+
+                const color = colorValue.trim();
+                if (/^#[0-9a-f]{6}$/i.test(color)) return color.toLowerCase();
+                if (/^#[0-9a-f]{3}$/i.test(color)) {
+                    return `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`.toLowerCase();
+                }
+
+                const temp = document.createElement('span');
+                temp.style.color = color;
+                document.body.appendChild(temp);
+                const computed = getComputedStyle(temp).color;
+                temp.remove();
+
+                const match = computed.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/i);
+                if (!match) return null;
+                return `#${[match[1], match[2], match[3]]
+                    .map(value => Number(value).toString(16).padStart(2, '0'))
+                    .join('')}`;
+            }
+
+            function clearSelectedImage() {
+                if (!selectedImage) return;
+                selectedImage.classList.remove('md-selected-image');
+                selectedImage = null;
+            }
+
+            function selectImage(img) {
+                if (!img) return;
+                clearSelectedImage();
+                selectedImage = img;
+                selectedImage.classList.add('md-selected-image');
+                updateToolbarState();
+            }
+
+            function setImageAlignment(align) {
+                if (!selectedImage) {
+                    showToast('Select an image first', 'info');
+                    return;
+                }
+
+                if (align) {
+                    selectedImage.setAttribute('data-align', align);
+                } else {
+                    selectedImage.removeAttribute('data-align');
+                }
+                normalizeEditorContent(visualEditor);
+                updateToolbarState();
+            }
+
+            function serializeHtmlNode(node) {
+                const clone = node.cloneNode(true);
+                if (clone.classList) clone.classList.remove('md-selected-image');
+                clone.querySelectorAll?.('.md-selected-image').forEach(el => el.classList.remove('md-selected-image'));
+                clone.querySelectorAll?.('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+                return clone.outerHTML;
+            }
+
+            function escapeMarkdownAltText(text) {
+                return text.replace(/[\r\n]+/g, ' ').replace(/\]/g, '\\]').trim();
+            }
+
+            function resetEmbeddedImageReferences() {
+                embeddedImageReferences = [];
+                embeddedImageReferenceBySrc = new Map();
+            }
+
+            function registerEmbeddedImageReference(imgNode) {
+                const src = imgNode.getAttribute('src') || '';
+                const existing = embeddedImageReferenceBySrc.get(src);
+                if (existing) return existing;
+
+                const ref = {
+                    label: `img${embeddedImageReferences.length + 1}`,
+                    src
+                };
+
+                embeddedImageReferences.push(ref);
+                embeddedImageReferenceBySrc.set(src, ref);
+                return ref;
+            }
+
+            function buildEmbeddedImageReferenceBlock() {
+                if (!embeddedImageReferences.length) return '';
+                return embeddedImageReferences
+                    .map(ref => `[${ref.label}]: ${ref.src}`)
+                    .join('\n');
+            }
+
+            function serializeTaskList(listNode) {
+                const items = Array.from(listNode.children)
+                    .filter(node => node.nodeName === 'LI')
+                    .map(li => {
+                        const checkbox = Array.from(li.children).find(child => child.matches?.('input[type="checkbox"]'));
+                        const clone = li.cloneNode(true);
+                        clone.querySelectorAll('input[type="checkbox"]').forEach(input => input.remove());
+                        const itemText = turndownService.turndown(clone.innerHTML)
+                            .trim()
+                            .replace(/\n+/g, ' ')
+                            .replace(/\s+/g, ' ');
+                        return `- [${checkbox?.checked ? 'x' : ' '}] ${itemText || 'Task'}`;
+                    });
+
+                return items.join('\n');
+            }
+
+            function escapeTableText(text) {
+                return text.replace(/\|/g, '\\|');
+            }
+
+            function serializeTableCell(cell) {
+                const markdown = turndownService.turndown(cell.innerHTML)
+                    .trim()
+                    .replace(/\n{2,}/g, '<br><br>')
+                    .replace(/\n/g, '<br>');
+                return escapeTableText(markdown || ' ');
+            }
+
+            function serializeTable(tableNode) {
+                const rows = Array.from(tableNode.querySelectorAll('tr'))
+                    .map(row => Array.from(row.children).filter(cell => ['TH', 'TD'].includes(cell.nodeName)));
+
+                if (rows.length === 0) return '';
+
+                const headerCells = rows[0];
+                const bodyRows = rows.slice(1);
+                const header = `| ${headerCells.map(serializeTableCell).join(' | ')} |`;
+                const separator = `| ${headerCells.map(() => '---').join(' | ')} |`;
+                const body = bodyRows.map(row => `| ${row.map(serializeTableCell).join(' | ')} |`);
+
+                return [header, separator, ...body].join('\n');
+            }
+
+            function normalizeEditorContent(root = visualEditor) {
+                const scope = root.nodeType === Node.ELEMENT_NODE ? root : visualEditor;
+
+                scope.querySelectorAll('font[color]').forEach(font => {
+                    const color = normalizeHexColor(font.getAttribute('color'));
+                    const span = document.createElement('span');
+                    if (color) {
+                        span.setAttribute('data-md-color', color);
+                        span.style.color = color;
+                    }
+                    span.innerHTML = font.innerHTML;
+                    font.replaceWith(span);
+                });
+
+                scope.querySelectorAll('span[style]').forEach(span => {
+                    const color = normalizeHexColor(span.style.color);
+                    if (color) {
+                        span.setAttribute('data-md-color', color);
+                        span.style.color = color;
+                    }
+                });
+
+                scope.querySelectorAll('ul').forEach(list => {
+                    const hasCheckbox = Array.from(list.querySelectorAll('li')).some(li =>
+                        Array.from(li.children).some(child => child.matches?.('input[type="checkbox"]'))
+                    );
+                    if (hasCheckbox) {
+                        list.setAttribute('data-task-list', 'true');
+                    }
+                });
+
+                scope.querySelectorAll('li').forEach(li => {
+                    const checkbox = Array.from(li.children).find(child => child.matches?.('input[type="checkbox"]'));
+                    if (!checkbox) return;
+                    li.setAttribute('data-task-item', 'true');
+                    checkbox.removeAttribute('disabled');
+                    checkbox.setAttribute('data-task-checkbox', 'true');
+                    checkbox.setAttribute('contenteditable', 'false');
+                });
+
+                scope.querySelectorAll('img').forEach(img => {
+                    img.classList.remove('md-selected-image');
+                    if (img.getAttribute('data-align') === 'default') {
+                        img.removeAttribute('data-align');
+                    }
+                });
+            }
+
+            function updateEditorAfterCustomChange() {
+                normalizeEditorContent(visualEditor);
+                updateWordCount();
+                updateToolbarState();
+            }
+
+            function createCleanEditorClone() {
+                const clone = visualEditor.cloneNode(true);
+                normalizeEditorContent(clone);
+                clone.querySelectorAll('.md-selected-image').forEach(node => node.classList.remove('md-selected-image'));
+                clone.querySelectorAll('[contenteditable]').forEach(node => node.removeAttribute('contenteditable'));
+                return clone;
+            }
+
+            function wrapSelection(tagName, attributes = {}, placeholderText = '') {
+                const range = getEditorRangeOrEnd();
+                const element = document.createElement(tagName);
+                Object.entries(attributes).forEach(([key, value]) => {
+                    element.setAttribute(key, value);
+                });
+
+                if (range.collapsed) {
+                    if (!placeholderText) return null;
+                    element.textContent = placeholderText;
+                    range.insertNode(element);
+                    placeCaretAtEnd(element);
+                } else {
+                    const fragment = range.extractContents();
+                    element.appendChild(fragment);
+                    range.insertNode(element);
+                    placeCaretAtEnd(element);
+                }
+
+                return element;
+            }
+
+            function applyTextColor(color) {
+                const normalized = normalizeHexColor(color);
+                if (!normalized) return;
+
+                const selection = window.getSelection();
+                if (!selection.rangeCount || !isNodeInsideEditor(selection.anchorNode)) {
+                    showToast('Select text to apply color', 'info');
+                    return;
+                }
+
+                const activeColorSpan = getClosestFromSelection('span[data-md-color]');
+                const range = selection.getRangeAt(0);
+
+                if (range.collapsed) {
+                    if (activeColorSpan) {
+                        activeColorSpan.setAttribute('data-md-color', normalized);
+                        activeColorSpan.style.color = normalized;
+                        updateEditorAfterCustomChange();
+                        return;
+                    }
+                    showToast('Select text to apply color', 'info');
+                    return;
+                }
+
+                const span = wrapSelection('span', { 'data-md-color': normalized }, '');
+                if (!span) return;
+                span.style.color = normalized;
+                updateEditorAfterCustomChange();
+            }
+
+            function clearTextColor() {
+                const activeColorSpan = getClosestFromSelection('span[data-md-color]');
+                if (!activeColorSpan) {
+                    showToast('Place the cursor inside colored text', 'info');
+                    return;
+                }
+
+                const parent = activeColorSpan.parentNode;
+                unwrapElement(activeColorSpan);
+                if (parent) placeCaretAtEnd(parent);
+                updateEditorAfterCustomChange();
+            }
+
+            function insertInlineCode() {
+                const code = wrapSelection('code', {}, 'inline code');
+                if (!code) return;
+                updateEditorAfterCustomChange();
+            }
+
+            function insertTaskList() {
+                const ul = document.createElement('ul');
+                ul.setAttribute('data-task-list', 'true');
+
+                const li = document.createElement('li');
+                li.setAttribute('data-task-item', 'true');
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.setAttribute('data-task-checkbox', 'true');
+                checkbox.setAttribute('contenteditable', 'false');
+
+                const textNode = document.createTextNode(' Task item');
+                li.append(checkbox, textNode);
+                ul.appendChild(li);
+
+                const range = getEditorRangeOrEnd();
+                range.deleteContents();
+                range.insertNode(ul);
+                placeCaret(textNode, textNode.length);
+                updateEditorAfterCustomChange();
+            }
+
+            function insertTable() {
+                const table = document.createElement('table');
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Column 1</th>
+                            <th>Column 2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Value 1</td>
+                            <td>Value 2</td>
+                        </tr>
+                        <tr>
+                            <td>Value 3</td>
+                            <td>Value 4</td>
+                        </tr>
+                    </tbody>
+                `;
+
+                const range = getEditorRangeOrEnd();
+                range.deleteContents();
+                range.insertNode(table);
+
+                const firstCell = table.querySelector('tbody td');
+                if (firstCell.firstChild) {
+                    placeCaret(firstCell.firstChild, firstCell.firstChild.textContent.length);
+                }
+                updateEditorAfterCustomChange();
+            }
+
+            function createImageElement(src, alt, align = '') {
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = alt || 'Image';
+                if (align) img.setAttribute('data-align', align);
+                return img;
+            }
+
+            function insertImageElement(img) {
+                const range = getEditorRangeOrEnd();
+                range.deleteContents();
+                range.insertNode(img);
+
+                const spacer = document.createElement('p');
+                spacer.innerHTML = '<br>';
+                img.parentNode.insertBefore(spacer, img.nextSibling);
+                placeCaret(spacer, 0);
+                selectImage(img);
+                updateEditorAfterCustomChange();
+            }
+
+            function readImageFileAsDataUrl(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = event => resolve(event.target.result);
+                    reader.onerror = () => reject(reader.error || new Error('Image read failed'));
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            async function insertImageFile(file, label = 'Image') {
+                const dataUrl = await readImageFileAsDataUrl(file);
+                const alt = file.name ? file.name.replace(/\.[^.]+$/, '') : label;
+                insertImageElement(createImageElement(dataUrl, alt));
+                showToast(`${label} embedded into the document`, 'success');
+            }
+
+            function moveSelectionToPoint(x, y) {
+                let range = null;
+
+                if (document.caretRangeFromPoint) {
+                    range = document.caretRangeFromPoint(x, y);
+                } else if (document.caretPositionFromPoint) {
+                    const caretPosition = document.caretPositionFromPoint(x, y);
+                    if (caretPosition) {
+                        range = document.createRange();
+                        range.setStart(caretPosition.offsetNode, caretPosition.offset);
+                        range.collapse(true);
+                    }
+                }
+
+                if (range) setRange(range);
+            }
+
             function toggleReaderMode() {
                 const overlay = $('#readerModeOverlay');
                 const content = $('#readerModeContent');
                 const bar = $('#readerModeBar');
                 const progress = $('#readerProgress');
+                const clone = createCleanEditorClone();
 
-                // Copy editor content, mark first h1 for no top margin
-                content.innerHTML = visualEditor.innerHTML;
+                content.innerHTML = clone.innerHTML;
+                normalizeEditorContent(content);
+                content.querySelectorAll('input[data-task-checkbox="true"]').forEach(input => {
+                    input.disabled = true;
+                });
+
                 const firstH1 = content.querySelector('h1');
                 if (firstH1) firstH1.classList.add('reader-first-h1');
 
@@ -1892,33 +2592,34 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
                 progress.style.width = '0%';
                 bar.classList.remove('hidden');
 
-                // Progress bar + auto-hide header on scroll
                 let hideTimer;
                 function onReaderScroll() {
                     const el = overlay;
                     const scrolled = el.scrollTop;
                     const total = el.scrollHeight - el.clientHeight;
-                    progress.style.width = total > 0 ? (scrolled / total * 100) + '%' : '0%';
+                    progress.style.width = total > 0 ? `${scrolled / total * 100}%` : '0%';
 
-                    // Show bar briefly on scroll
                     bar.classList.remove('hidden');
                     clearTimeout(hideTimer);
-                    hideTimer = setTimeout(() => { if (overlay.scrollTop > 80) bar.classList.add('hidden'); }, 2000);
+                    hideTimer = setTimeout(() => {
+                        if (overlay.scrollTop > 80) bar.classList.add('hidden');
+                    }, 2000);
                 }
 
-                // Re-attach scroll listener each open
                 overlay._scrollHandler && overlay.removeEventListener('scroll', overlay._scrollHandler);
                 overlay._scrollHandler = onReaderScroll;
                 overlay.addEventListener('scroll', onReaderScroll);
 
-                // Show header on mouse move at top of screen
                 function onReaderMouseMove(e) {
                     if (e.clientY < 80) {
                         bar.classList.remove('hidden');
                         clearTimeout(hideTimer);
-                        hideTimer = setTimeout(() => { if (overlay.scrollTop > 80) bar.classList.add('hidden'); }, 2500);
+                        hideTimer = setTimeout(() => {
+                            if (overlay.scrollTop > 80) bar.classList.add('hidden');
+                        }, 2500);
                     }
                 }
+
                 overlay._moveHandler && overlay.removeEventListener('mousemove', overlay._moveHandler);
                 overlay._moveHandler = onReaderMouseMove;
                 overlay.addEventListener('mousemove', onReaderMouseMove);
@@ -1927,14 +2628,13 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
             function closeReaderMode() {
                 const overlay = $('#readerModeOverlay');
                 overlay.classList.remove('show');
-                // Clean up
                 overlay._scrollHandler && overlay.removeEventListener('scroll', overlay._scrollHandler);
                 overlay._moveHandler && overlay.removeEventListener('mousemove', overlay._moveHandler);
             }
 
             function exportPDF() {
                 overflowMenu.classList.remove('show');
-                showToast('Opening print dialog…', 'info');
+                showToast('Opening print dialog...', 'info');
                 setTimeout(() => window.print(), 350);
             }
 
@@ -1948,12 +2648,23 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
                CORE LOGIC (MD <-> HTML)
                ========================================================== */
             function loadMarkdown(mdText) {
-                visualEditor.innerHTML = marked.parse(mdText);
+                visualEditor.innerHTML = window.marked.parse(mdText);
+                normalizeEditorContent(visualEditor);
+                clearSelectedImage();
                 updateWordCount();
+                updateToolbarState();
             }
 
             function getMarkdown() {
-                return turndownService.turndown(visualEditor.innerHTML);
+                resetEmbeddedImageReferences();
+                const clone = createCleanEditorClone();
+                const markdownBody = turndownService.turndown(clone.innerHTML).trim();
+                const imageReferenceBlock = buildEmbeddedImageReferenceBlock();
+
+                if (!imageReferenceBlock) return markdownBody;
+                if (!markdownBody) return imageReferenceBlock;
+
+                return `${markdownBody}\n\n${imageReferenceBlock}`;
             }
 
             function downloadFile() {
@@ -1970,7 +2681,7 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
             function handleFile(file) {
                 if (!file) return;
                 const reader = new FileReader();
-                reader.onload = (e) => {
+                reader.onload = e => {
                     loadMarkdown(e.target.result);
                     showToast(`Loaded ${file.name}`, 'success');
                 };
@@ -1981,8 +2692,10 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
                EDITOR EXECUTION & TOOLBAR STATE
                ========================================================== */
             function executeCommand(command, value = null) {
+                clearSelectedImage();
                 visualEditor.focus();
                 document.execCommand(command, false, value);
+                normalizeEditorContent(visualEditor);
                 updateToolbarState();
                 updateWordCount();
             }
@@ -1993,12 +2706,14 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
                 $$('[data-command]').forEach(btn => {
                     const cmd = btn.dataset.command;
                     if (toggleCommands.includes(cmd)) {
-                        try { btn.classList.toggle('active', document.queryCommandState(cmd)); }
-                        catch { btn.classList.remove('active'); }
+                        try {
+                            btn.classList.toggle('active', document.queryCommandState(cmd));
+                        } catch {
+                            btn.classList.remove('active');
+                        }
                     }
                 });
 
-                // Block format status mapping
                 try {
                     let block = document.queryCommandValue('formatBlock');
                     if (block) {
@@ -2007,25 +2722,22 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
                     } else {
                         blockFormatSelect.value = 'p';
                     }
-                } catch { blockFormatSelect.value = 'p'; }
-            }
-
-            /* ==========================================================
-               SELECTION & MODALS
-               ========================================================== */
-            function saveSelection() {
-                const sel = window.getSelection();
-                if (sel.getRangeAt && sel.rangeCount) {
-                    savedSelectionRange = sel.getRangeAt(0).cloneRange();
+                } catch {
+                    blockFormatSelect.value = 'p';
                 }
-            }
 
-            function restoreSelection() {
-                if (savedSelectionRange) {
-                    const sel = window.getSelection();
-                    sel.removeAllRanges();
-                    sel.addRange(savedSelectionRange);
+                inlineCodeBtn.classList.toggle('active', !!getClosestFromSelection('code') && !getClosestFromSelection('pre code'));
+
+                const colorNode = getClosestFromSelection('span[data-md-color]');
+                const selectedColor = normalizeHexColor(colorNode?.getAttribute('data-md-color') || colorNode?.style?.color);
+                if (selectedColor) {
+                    textColorInput.value = selectedColor;
                 }
+
+                Object.entries(imageAlignmentButtons).forEach(([align, button]) => {
+                    const activeAlign = selectedImage?.getAttribute('data-align') || 'center';
+                    button.classList.toggle('active', !!selectedImage && activeAlign === align);
+                });
             }
 
             function openModal(modal) {
@@ -2034,75 +2746,164 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
                 setTimeout(() => modal.querySelector('.form-input')?.focus(), 80);
             }
 
-            function closeModal(modal) {
+            function closeModal(modal, shouldRestoreSelection = true) {
                 modal.classList.remove('show');
-                modal.querySelectorAll('.form-input').forEach(i => i.value = '');
+                modal.querySelectorAll('.form-input').forEach(input => {
+                    if (input.type === 'color') return;
+                    if (input.tagName === 'SELECT') input.selectedIndex = 0;
+                    else input.value = '';
+                });
                 visualEditor.focus();
-                restoreSelection();
+                if (shouldRestoreSelection) restoreSelection();
             }
 
             /* ==========================================================
                EVENT LISTENERS
                ========================================================== */
+            visualEditor.addEventListener('input', () => {
+                updateWordCount();
+                updateToolbarState();
+            });
 
-            // Editor interaction
-            visualEditor.addEventListener('input', updateWordCount);
             visualEditor.addEventListener('keyup', updateToolbarState);
             visualEditor.addEventListener('mouseup', updateToolbarState);
 
-            // Toolbar Buttons
-            commandBar.addEventListener('click', (e) => {
+            visualEditor.addEventListener('click', e => {
+                if (e.target.matches('input[data-task-checkbox="true"]')) {
+                    e.preventDefault();
+                    e.target.checked = !e.target.checked;
+                    updateToolbarState();
+                    return;
+                }
+
+                if (e.target.matches('img')) {
+                    e.preventDefault();
+                    selectImage(e.target);
+                    return;
+                }
+
+                clearSelectedImage();
+                updateToolbarState();
+            });
+
+            visualEditor.addEventListener('keydown', e => {
+                if ((e.key === 'Backspace' || e.key === 'Delete') && selectedImage) {
+                    e.preventDefault();
+                    const img = selectedImage;
+                    clearSelectedImage();
+                    img.remove();
+                    updateEditorAfterCustomChange();
+                }
+            });
+
+            visualEditor.addEventListener('paste', async e => {
+                const items = [...(e.clipboardData?.items || [])];
+                const imageItem = items.find(item => item.type.startsWith('image/'));
+                if (!imageItem) return;
+
+                e.preventDefault();
+                saveSelection();
+
+                try {
+                    const file = imageItem.getAsFile();
+                    restoreSelection();
+                    await insertImageFile(file, 'Pasted image');
+                } catch (error) {
+                    console.warn('Image paste failed:', error);
+                    showToast('Could not paste image', 'error');
+                }
+            });
+
+            commandBar.addEventListener('click', e => {
                 const btn = e.target.closest('.toolbar-btn[data-command]');
                 if (btn) executeCommand(btn.dataset.command);
             });
 
-            // Block Format Change
-            blockFormatSelect.addEventListener('change', (e) => {
+            blockFormatSelect.addEventListener('change', e => {
                 const val = e.target.value;
                 executeCommand('formatBlock', val);
             });
 
-            // Clear format
             clearFormatBtn.addEventListener('click', () => executeCommand('removeFormat'));
+            inlineCodeBtn.addEventListener('click', insertInlineCode);
+            insertTaskListBtn.addEventListener('click', insertTaskList);
+            insertTableBtn.addEventListener('click', insertTable);
+            clearTextColorBtn.addEventListener('click', clearTextColor);
+            textColorInput.addEventListener('input', e => applyTextColor(e.target.value));
 
-            // Upload / Download logic
+            Object.entries(imageAlignmentButtons).forEach(([align, button]) => {
+                button.addEventListener('click', () => setImageAlignment(align));
+            });
+
             uploadBtn.addEventListener('click', () => fileInput.click());
             downloadBtn.addEventListener('click', downloadFile);
-            fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+            fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
 
-            // Drag & Drop
             visualEditor.addEventListener('dragover', e => e.preventDefault());
-            visualEditor.addEventListener('drop', e => {
-                if (e.dataTransfer.files.length > 0) {
-                    e.preventDefault();
-                    handleFile(e.dataTransfer.files[0]);
+            visualEditor.addEventListener('drop', async e => {
+                if (e.dataTransfer.files.length === 0) return;
+                e.preventDefault();
+
+                const file = e.dataTransfer.files[0];
+                if (file.type.startsWith('image/')) {
+                    moveSelectionToPoint(e.clientX, e.clientY);
+                    try {
+                        await insertImageFile(file, 'Dropped image');
+                    } catch (error) {
+                        console.warn('Image drop failed:', error);
+                        showToast('Could not insert dropped image', 'error');
+                    }
+                    return;
+                }
+
+                handleFile(file);
+            });
+
+            overflowMenuBtn.addEventListener('click', e => {
+                e.stopPropagation();
+                overflowMenu.classList.toggle('show');
+            });
+
+            document.addEventListener('click', e => {
+                if (!overflowMenu.contains(e.target) && e.target !== overflowMenuBtn) {
+                    overflowMenu.classList.remove('show');
                 }
             });
 
-            // Top right menu
-            overflowMenuBtn.addEventListener('click', e => { e.stopPropagation(); overflowMenu.classList.toggle('show'); });
-            document.addEventListener('click', e => { if (!overflowMenu.contains(e.target) && e.target !== overflowMenuBtn) overflowMenu.classList.remove('show'); });
+            document.addEventListener('selectionchange', () => {
+                if (isNodeInsideEditor(window.getSelection()?.anchorNode)) {
+                    updateToolbarState();
+                }
+            });
 
-            // Theme cards
             $$('.theme-card').forEach(card => {
                 card.addEventListener('click', () => setTheme(card.dataset.themeName));
             });
 
-            resetSampleBtn.addEventListener('click', () => { loadMarkdown(SAMPLE_MD); overflowMenu.classList.remove('show'); showToast('Reset to sample'); });
+            resetSampleBtn.addEventListener('click', () => {
+                loadMarkdown(SAMPLE_MD);
+                overflowMenu.classList.remove('show');
+                showToast('Reset to sample');
+            });
 
-            // Reader mode
             $('#readerModeBtn').addEventListener('click', toggleReaderMode);
             $('#closeReaderModeBtn').addEventListener('click', closeReaderMode);
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReaderMode(); });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') {
+                    closeReaderMode();
+                    clearSelectedImage();
+                    updateToolbarState();
+                }
+            });
 
-            // PDF export
             $('#exportPDFBtn').addEventListener('click', exportPDF);
 
-            // Modals
             insertLinkBtn.addEventListener('click', () => openModal(linkModal));
             insertImageBtn.addEventListener('click', () => openModal(imageModal));
 
-            $$('[data-close-modal]').forEach(btn => btn.addEventListener('click', e => closeModal(e.target.closest('.modal-overlay'))));
+            $$('[data-close-modal]').forEach(btn => {
+                btn.addEventListener('click', e => closeModal(e.target.closest('.modal-overlay')));
+            });
 
             confirmLinkBtn.addEventListener('click', () => {
                 const url = linkURLInput.value.trim();
@@ -2110,26 +2911,28 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
                     restoreSelection();
                     executeCommand('createLink', url);
                 }
-                closeModal(linkModal);
+                closeModal(linkModal, false);
             });
 
             confirmImageBtn.addEventListener('click', () => {
                 const url = imageURLInput.value.trim();
                 const alt = imageAltInput.value.trim() || 'Image';
+                const align = imageAlignInput.value;
                 if (url) {
                     restoreSelection();
-                    const imgHTML = `<img src="${url}" alt="${alt}" />`;
-                    executeCommand('insertHTML', imgHTML);
+                    insertImageElement(createImageElement(url, alt, align));
                 }
-                closeModal(imageModal);
+                closeModal(imageModal, false);
             });
 
-            // Initialize
+            /* ==========================================================
+               INITIALIZATION
+               ========================================================== */
             initTheme();
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('loadShared') === 'true') {
                 const request = indexedDB.open('wymd_share_db', 1);
-                request.onsuccess = (e) => {
+                request.onsuccess = e => {
                     const db = e.target.result;
                     if (db.objectStoreNames.contains('shared_files')) {
                         const tx = db.transaction('shared_files', 'readwrite');
@@ -2156,28 +2959,27 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
             } else {
                 loadMarkdown(SAMPLE_MD);
             }
+
             if (urlParams.get('error') === 'share_failed') {
                 showToast('Failed to load shared file', 'error');
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
 
-            // Keep editor focused when clicking empty space
-            $('#editorContainer').addEventListener('click', (e) => {
-                if (e.target === $('#editorContainer')) visualEditor.focus();
+            $('#editorContainer').addEventListener('click', e => {
+                if (e.target === $('#editorContainer')) {
+                    clearSelectedImage();
+                    visualEditor.focus();
+                }
             });
 
-            // ── PWA: Register Service Worker ──────────────────────────
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js').catch(err => {
                     console.warn('SW registration failed:', err);
                 });
             }
 
-            // ── PWA: File Handling API (launchQueue) ──────────────────
-            // When the PWA is opened from the Android file manager,
-            // launchQueue delivers the file handle(s) we need to open.
             if ('launchQueue' in window) {
-                window.launchQueue.setConsumer(async (launchParams) => {
+                window.launchQueue.setConsumer(async launchParams => {
                     if (!launchParams.files || launchParams.files.length === 0) return;
                     try {
                         const fileHandle = launchParams.files[0];
@@ -2191,7 +2993,6 @@ Try inserting a [Link to Google](https://google.com) or dragging a local \`.md\`
                     }
                 });
             }
-
         });
     </script>
 </body>
