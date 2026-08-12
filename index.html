@@ -14,16 +14,19 @@
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <title>WYSIWYG MD</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        // Flag the Tauri desktop shell before first paint so macOS-native
+        // styling applies without a flash of the web chrome.
+        if (window.__TAURI__) document.documentElement.classList.add('is-tauri');
+        // Same idea for the Android shell (Kotlin WebView injects AndroidBridge).
+        if (window.AndroidBridge) document.documentElement.classList.add('is-android');
+    </script>
+    <link href="vendor/fonts/fonts.css" rel="stylesheet">
+    <link rel="stylesheet" href="vendor/fa/all.min.css">
 
     <!-- Markdown Parsers -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
+    <script src="vendor/marked.min.js"></script>
+    <script src="vendor/turndown.js"></script>
 
     <style>
         /* ============================================================
@@ -134,6 +137,64 @@
             --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.2);
             --shadow-large: 0 12px 40px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.25);
             --shadow-glow: 0 0 24px rgba(99, 102, 241, 0.25);
+        }
+
+        /* AUTO (SYSTEM) THEME — macOS-native palette, follows the OS appearance */
+        [data-theme="auto"] {
+            --bg-canvas: #ECECEC;
+            --bg-surface: #FFFFFF;
+            --bg-surface-elevated: #FFFFFF;
+            --bg-surface-hover: #F2F2F2;
+            --bg-surface-active: #E8E8E8;
+            --bg-inset: #F5F5F5;
+
+            --text-primary: #1D1D1F;
+            --text-secondary: #515154;
+            --text-muted: #98989D;
+
+            --border-subtle: #E3E3E5;
+            --border-strong: #CDCDD1;
+            --border-focus: #007AFF;
+
+            --accent-primary: #007AFF;
+            --accent-primary-hover: #0066D6;
+            --accent-primary-soft: rgba(0, 122, 255, 0.10);
+            --accent-secondary: #5856D6;
+            --selection-bg: rgba(0, 122, 255, 0.18);
+
+            --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 4px 14px rgba(0, 0, 0, 0.10), 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-large: 0 18px 50px rgba(0, 0, 0, 0.16), 0 4px 14px rgba(0, 0, 0, 0.08);
+            --shadow-glow: none;
+            --focus-ring: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent-primary);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            [data-theme="auto"] {
+                --bg-canvas: #1E1E1E;
+                --bg-surface: #262626;
+                --bg-surface-elevated: #2E2E2E;
+                --bg-surface-hover: #333333;
+                --bg-surface-active: #3A3A3A;
+                --bg-inset: #1B1B1B;
+
+                --text-primary: #F5F5F7;
+                --text-secondary: #B0B0B5;
+                --text-muted: #757579;
+
+                --border-subtle: #3A3A3C;
+                --border-strong: #545456;
+
+                --accent-primary: #0A84FF;
+                --accent-primary-hover: #409CFF;
+                --accent-primary-soft: rgba(10, 132, 255, 0.16);
+                --accent-secondary: #5E5CE6;
+                --selection-bg: rgba(10, 132, 255, 0.28);
+
+                --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.3);
+                --shadow-medium: 0 4px 14px rgba(0, 0, 0, 0.35);
+                --shadow-large: 0 18px 50px rgba(0, 0, 0, 0.5);
+            }
         }
 
         /* MONO B&W THEME */
@@ -658,6 +719,121 @@
         }
 
         /* ============================================================
+           TAB STRIP (desktop multi-document)
+           Hidden until a second document is open; the app-bar doc title
+           stands in for the single-document case.
+           ============================================================ */
+        .tab-strip {
+            display: none;
+        }
+
+        .is-tauri .tab-strip.has-tabs,
+        .is-android .tab-strip.has-tabs {
+            display: flex;
+            align-items: stretch;
+            gap: 2px;
+            padding: 0 var(--space-4);
+            background: var(--bg-canvas);
+            border-bottom: 1px solid var(--border-subtle);
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .tab-strip::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-strip .tab {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            max-width: 200px;
+            min-width: 0;
+            margin-top: 6px;
+            padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            background: transparent;
+            color: var(--text-secondary);
+            font: var(--text-meta);
+            cursor: pointer;
+            transition: background 0.1s, color 0.1s;
+        }
+
+        .tab-strip .tab:hover {
+            background: color-mix(in srgb, var(--bg-surface) 60%, transparent);
+        }
+
+        .tab-strip .tab.active {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            border-color: var(--border-subtle);
+        }
+
+        .tab-strip .tab-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tab-strip .tab-dot {
+            width: 7px;
+            height: 7px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: var(--accent-primary);
+        }
+
+        .tab-strip .tab-close {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            border-radius: 50%;
+            font-size: 12px;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0.65;
+            transition: 0.1s;
+        }
+
+        .tab-strip .tab-close:hover {
+            opacity: 1;
+            background: var(--accent-danger-soft);
+            color: var(--text-primary);
+        }
+
+        .tab-strip .tab-new {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            flex-shrink: 0;
+            margin: 6px var(--space-2) 0;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            line-height: 1;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .tab-strip .tab-new:hover {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+        }
+
+        /* ============================================================
            6. WORKSPACE & VISUAL EDITOR (PROSE)
            ============================================================ */
         .workspace {
@@ -1094,6 +1270,86 @@
             gap: var(--space-4);
         }
 
+        /* Word/character count popup */
+        .count-stats {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .count-stat {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: var(--space-8);
+            padding: var(--space-4) var(--space-6);
+            border-radius: var(--radius-md);
+            background: var(--bg-inset);
+        }
+
+        .count-stat-label {
+            font: var(--text-meta-medium);
+            color: var(--text-secondary);
+        }
+
+        .count-stat-value {
+            font: 600 20px/1 var(--font-ui);
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Paste-as chooser */
+        .paste-as-options {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+            margin-bottom: var(--space-8);
+        }
+
+        .paste-as-option {
+            display: flex;
+            align-items: center;
+            gap: var(--space-6);
+            padding: var(--space-6);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            background: var(--bg-inset);
+            color: var(--text-primary);
+            font: var(--text-body-medium);
+            cursor: pointer;
+            text-align: left;
+            transition: background 0.1s, border-color 0.1s;
+        }
+
+        .paste-as-option[hidden] {
+            display: none;
+        }
+
+        .paste-as-option:hover {
+            background: var(--bg-surface-hover);
+            border-color: var(--border-strong);
+        }
+
+        .paste-as-option i {
+            width: 16px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .paste-as-option-name {
+            flex: 1;
+        }
+
+        .paste-as-key {
+            font: var(--text-meta-medium);
+            font-family: var(--font-code);
+            color: var(--text-muted);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 1px var(--space-3);
+        }
+
         /* Mobile Adjustments */
         @media (max-width: 767px) {
             .app-bar {
@@ -1474,13 +1730,40 @@
             background: var(--accent-primary-soft);
         }
 
+        /* Mini appearance tile (macOS System Settings style): theme background,
+           "Aa" in the theme's text color, accent underline. */
         .theme-card-dot {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 2px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            width: 52px;
+            height: 34px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.14);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10);
             flex-shrink: 0;
+            background: var(--sw-bg, #FFFFFF);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .theme-card-dot::before {
+            content: 'Aa';
+            font: 600 13px/1 var(--font-ui);
+            color: var(--sw-text, #1A1D23);
+            margin-bottom: 6px;
+        }
+
+        .theme-card-dot::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            border-radius: 2px;
+            background: var(--sw-accent, #6366F1);
         }
 
         .theme-card-name {
@@ -1497,49 +1780,85 @@
             font-weight: 600;
         }
 
-        /* dot colors */
-        .theme-card[data-theme-name="light"] .theme-card-dot {
-            background: conic-gradient(#F0F2F5 180deg, #6366F1 0deg);
+        /* swatch palettes */
+        .theme-card[data-theme-name="light"] {
+            --sw-bg: #FFFFFF;
+            --sw-text: #1A1D23;
+            --sw-accent: #6366F1;
         }
 
-        .theme-card[data-theme-name="dark"] .theme-card-dot {
-            background: conic-gradient(#1A1D27 180deg, #6366F1 0deg);
+        .theme-card[data-theme-name="dark"] {
+            --sw-bg: #1A1D27;
+            --sw-text: #F1F3F5;
+            --sw-accent: #6366F1;
         }
 
-        .theme-card[data-theme-name="mono"] .theme-card-dot {
-            background: conic-gradient(#F9F9F9 180deg, #111111 0deg);
+        .theme-card[data-theme-name="mono"] {
+            --sw-bg: #FFFFFF;
+            --sw-text: #0A0A0A;
+            --sw-accent: #111111;
         }
 
-        .theme-card[data-theme-name="mono-dark"] .theme-card-dot {
-            background: conic-gradient(#0A0A0A 180deg, #E0E0E0 0deg);
+        .theme-card[data-theme-name="mono-dark"] {
+            --sw-bg: #141414;
+            --sw-text: #F5F5F5;
+            --sw-accent: #E0E0E0;
         }
 
-        .theme-card[data-theme-name="ocean"] .theme-card-dot {
-            background: conic-gradient(#0D1B2A 180deg, #06B6D4 0deg);
+        .theme-card[data-theme-name="ocean"] {
+            --sw-bg: #1B2A3B;
+            --sw-text: #E0F2FE;
+            --sw-accent: #06B6D4;
         }
 
-        .theme-card[data-theme-name="forest"] .theme-card-dot {
-            background: conic-gradient(#0F1A0E 180deg, #22C55E 0deg);
+        .theme-card[data-theme-name="forest"] {
+            --sw-bg: #1A2B18;
+            --sw-text: #DCFCE7;
+            --sw-accent: #22C55E;
         }
 
-        .theme-card[data-theme-name="sunset"] .theme-card-dot {
-            background: conic-gradient(#1A0A0A 180deg, #F97316 0deg);
+        .theme-card[data-theme-name="sunset"] {
+            --sw-bg: #2B1515;
+            --sw-text: #FEF3C7;
+            --sw-accent: #F97316;
         }
 
-        .theme-card[data-theme-name="candy"] .theme-card-dot {
-            background: conic-gradient(#FFF0F6 180deg, #EC4899 0deg);
+        .theme-card[data-theme-name="candy"] {
+            --sw-bg: #FFF0F6;
+            --sw-text: #3D0026;
+            --sw-accent: #EC4899;
         }
 
-        .theme-card[data-theme-name="candy-dark"] .theme-card-dot {
-            background: conic-gradient(#1A0A14 180deg, #F472B6 0deg);
+        .theme-card[data-theme-name="candy-dark"] {
+            --sw-bg: #2B1020;
+            --sw-text: #FFE4F3;
+            --sw-accent: #F472B6;
         }
 
-        .theme-card[data-theme-name="paper"] .theme-card-dot {
-            background: conic-gradient(#F5F0E8 180deg, #B45309 0deg);
+        .theme-card[data-theme-name="paper"] {
+            --sw-bg: #FFFDF8;
+            --sw-text: #2D2013;
+            --sw-accent: #B45309;
         }
 
-        .theme-card[data-theme-name="paper-dark"] .theme-card-dot {
-            background: conic-gradient(#160F07 180deg, #D97706 0deg);
+        .theme-card[data-theme-name="paper-dark"] {
+            --sw-bg: #241A0D;
+            --sw-text: #F5E6CC;
+            --sw-accent: #D97706;
+        }
+
+        /* Auto: half light / half dark; "Aa" inverts per half via blend mode */
+        .theme-card[data-theme-name="auto"] {
+            --sw-accent: #007AFF;
+        }
+
+        .theme-card[data-theme-name="auto"] .theme-card-dot {
+            background: linear-gradient(to right, #FFFFFF 50%, #1E1E1E 50%);
+        }
+
+        .theme-card[data-theme-name="auto"] .theme-card-dot::before {
+            color: #FFFFFF;
+            mix-blend-mode: difference;
         }
 
         /* Theme picker section layout */
@@ -1647,6 +1966,720 @@
         .overflow-menu-item:active {
             transform: scale(0.97);
         }
+
+        /* Hide the formatting bar's overflow scrollbar (still scrollable) */
+        .command-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* ============================================================
+           13. TAURI DESKTOP SHELL — macOS (Tahoe) NATIVE STYLING
+           Everything below is scoped to html.is-tauri and leaves the
+           web/PWA presentation untouched.
+           ============================================================ */
+        .tauri-only {
+            display: none !important;
+        }
+
+        .is-tauri .tauri-only {
+            display: flex !important;
+        }
+
+        .is-tauri {
+            /* System typography: SF Pro / SF Mono */
+            --font-ui: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+            --font-code: ui-monospace, 'SF Mono', 'Menlo', monospace;
+            /* Tahoe-scale continuous radii */
+            --radius-md: 9px;
+            --radius-lg: 16px;
+        }
+
+        /* --- Unified toolbar (single title-bar row behind traffic lights) --- */
+        .is-tauri .app-bar {
+            height: 52px;
+            padding: 0 var(--space-6) 0 84px; /* clear the inset traffic lights */
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .is-tauri .app-bar-brand {
+            display: none; /* redundant with the app itself; doc title replaces it */
+        }
+
+        /* Document title (proxy for the hidden native title) */
+        .is-tauri .doc-title {
+            align-items: baseline;
+            gap: var(--space-3);
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .is-tauri .doc-title .doc-name {
+            font: var(--text-body-medium);
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .is-tauri .doc-title .doc-edited {
+            font: var(--text-meta);
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        /* Hide web Open/Save buttons — File menu (⌘O/⌘S) owns these on macOS */
+        .is-tauri #uploadBtn,
+        .is-tauri #downloadBtn {
+            display: none;
+        }
+
+        /* Capsule buttons, Tahoe-style */
+        .is-tauri .btn {
+            border-radius: var(--radius-full);
+        }
+
+        .is-tauri .btn-icon {
+            border-radius: var(--radius-full);
+        }
+
+        /* --- Chrome is not selectable --- */
+        .is-tauri .command-bar,
+        .is-tauri .status-bar {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* --- Liquid-glass materials: menus, dialogs, bars --- */
+        .is-tauri .overflow-menu {
+            background: color-mix(in srgb, var(--bg-surface-elevated) 78%, transparent);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            backdrop-filter: blur(30px) saturate(180%);
+            border-radius: 14px;
+            padding: var(--space-3);
+        }
+
+        .is-tauri .overflow-menu-item {
+            border-radius: 8px;
+        }
+
+        .is-tauri .modal-dialog {
+            background: color-mix(in srgb, var(--bg-surface-elevated) 85%, transparent);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            backdrop-filter: blur(40px) saturate(180%);
+            border-radius: 16px;
+        }
+
+        .is-tauri .modal-overlay {
+            -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        /* macOS dialogs don't carry a ×-close alongside Cancel */
+        .is-tauri .modal-close {
+            display: none;
+        }
+
+        .is-tauri .toast {
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            backdrop-filter: blur(30px) saturate(180%);
+            background: color-mix(in srgb, var(--bg-surface-elevated) 80%, transparent);
+        }
+
+        .is-tauri .toast.toast-success svg.ic {
+            color: var(--accent-success);
+        }
+
+        .is-tauri .toast.toast-error svg.ic {
+            color: var(--accent-danger);
+        }
+
+        /* --- Under-window vibrancy (Auto theme only; others stay opaque) --- */
+        .is-tauri[data-theme="auto"] body {
+            background: transparent;
+        }
+
+        .is-tauri[data-theme="auto"] .app-bar,
+        .is-tauri[data-theme="auto"] .command-bar,
+        .is-tauri[data-theme="auto"] .status-bar {
+            background: color-mix(in srgb, var(--bg-surface) 62%, transparent);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            backdrop-filter: blur(24px) saturate(180%);
+        }
+
+        .is-tauri[data-theme="auto"] .editor-container {
+            background: color-mix(in srgb, var(--bg-surface) 86%, transparent);
+        }
+
+        .is-tauri[data-theme="auto"] .reader-mode-overlay {
+            background: color-mix(in srgb, var(--bg-canvas) 82%, transparent);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            backdrop-filter: blur(30px) saturate(180%);
+        }
+
+        /* --- Inline SVG icons (SF-Symbols-style line glyphs) --- */
+        .is-tauri svg.ic {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.7;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .is-tauri .status-bar svg.ic,
+        .is-tauri .theme-picker-section-header svg.ic {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Save-changes sheet footer: "Don't Save" leading, Cancel/Save trailing */
+        .modal-footer .footer-spacer {
+            flex: 1;
+        }
+
+        /* ============================================================
+           14. ANDROID SHELL
+           Scoped to html.is-android (Kotlin WebView injects the bridge).
+           Keeps the web look but shows the document title + tab strip
+           and hides desktop-only affordances.
+           ============================================================ */
+        .is-android .doc-title.tauri-only {
+            display: flex !important;
+            align-items: baseline;
+            gap: var(--space-3);
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .is-android .doc-title .doc-name {
+            font: var(--text-body-medium);
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .is-android .doc-title .doc-edited {
+            font: var(--text-meta);
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        /* The doc title replaces the static app name */
+        .is-android .app-bar-brand .app-bar-title {
+            display: none;
+        }
+
+        /* Hover tooltips don't exist on touch — avoid sticky ghosts */
+        .is-android .command-bar .toolbar-btn[data-tooltip]::after {
+            display: none;
+        }
+
+        /* Tab strip touch targets */
+        .is-android .tab-strip .tab {
+            padding-top: var(--space-3);
+            padding-bottom: var(--space-3);
+        }
+
+        .is-android .tab-strip .tab-close {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* The doc title is the app identity; drop the redundant brand */
+        .is-android .app-bar-brand {
+            display: none;
+        }
+
+        /* --- Bottom formatting bar: compact primary row, thumb-reachable,
+           expandable into a wrapped panel with everything else --- */
+        .is-android .command-bar {
+            order: 10;
+            border-bottom: none;
+            border-top: 1px solid var(--border-subtle);
+            padding: var(--space-3) var(--space-4);
+            justify-content: space-between;
+        }
+
+        .is-android .status-bar {
+            order: 11;
+        }
+
+        .is-android .command-bar .separator {
+            display: none;
+        }
+
+        .is-android .command-bar .toolbar-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 15px;
+        }
+
+        .is-android .command-bar .toolbar-select {
+            height: 40px;
+            max-width: 118px;
+        }
+
+        .is-android .command-bar .toolbar-color {
+            width: 40px;
+            height: 40px;
+        }
+
+        .is-android .command-bar:not(.expanded) .cb-secondary {
+            display: none !important;
+        }
+
+        .is-android .command-bar.expanded {
+            flex-wrap: wrap;
+            overflow-x: hidden;
+            row-gap: var(--space-3);
+            justify-content: flex-start;
+        }
+
+        /* Toasts sit above the bottom toolbar */
+        .is-android .toast-container {
+            bottom: calc(var(--status-bar-height) + 72px);
+        }
+
+        /* ============================================================
+           15. BLOCK TOOLS (hover copy / format) & BLOCK FORMAT MENU
+           Floating, fixed-position chrome that never enters the
+           contenteditable tree — so it can't leak into the Markdown.
+           ============================================================ */
+        .block-tools {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 300;
+            display: none;
+            align-items: center;
+            gap: 2px;
+            padding: 2px;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-large);
+        }
+
+        .block-tools.show {
+            display: flex;
+        }
+
+        .block-tools.copy-only .block-tool-format {
+            display: none;
+        }
+
+        .block-tool {
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            cursor: pointer;
+            transition: background 0.1s, color 0.1s, transform 0.1s;
+        }
+
+        .block-tool:hover {
+            background: var(--bg-surface-hover);
+            color: var(--text-primary);
+        }
+
+        .block-tool:active {
+            transform: scale(0.9);
+        }
+
+        .is-android .block-tool {
+            width: 34px;
+            height: 34px;
+            font-size: 13px;
+        }
+
+        /* Hover-only copy affordance parked in the top-right of blocks whose
+           formatting is worth carrying to the clipboard. */
+        .copy-float {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 290;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            padding: 0;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-medium);
+            color: var(--text-muted);
+            font-size: 11px;
+            cursor: pointer;
+            transition: background 0.1s, color 0.1s, transform 0.1s;
+        }
+
+        .copy-float.show {
+            display: inline-flex;
+        }
+
+        .copy-float:hover {
+            background: var(--bg-surface-hover);
+            color: var(--text-primary);
+        }
+
+        .copy-float:active {
+            transform: scale(0.9);
+        }
+
+        .is-android .copy-float {
+            width: 34px;
+            height: 34px;
+            font-size: 13px;
+        }
+
+        .block-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 320;
+            width: 348px;
+            max-width: calc(100vw - 24px);
+            display: none;
+            flex-direction: column;
+            gap: var(--space-2);
+            padding: var(--space-3);
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-large);
+        }
+
+        .block-menu.show {
+            display: flex;
+        }
+
+        .is-tauri .block-menu {
+            background: color-mix(in srgb, var(--bg-surface-elevated) 82%, transparent);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            backdrop-filter: blur(30px) saturate(180%);
+            border-radius: 14px;
+        }
+
+        .block-menu-filter {
+            height: 30px;
+            padding: 0 var(--space-4);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            background: var(--bg-inset);
+            color: var(--text-primary);
+            font: var(--text-body);
+            outline: none;
+        }
+
+        .block-menu-filter:focus {
+            border-color: var(--accent-primary);
+        }
+
+        /* The bar/field border already carries focus; the global ring is too
+           heavy for these inline inputs. */
+        .block-menu-filter:focus-visible,
+        .find-input:focus-visible {
+            box-shadow: none;
+        }
+
+        .block-menu-list {
+            display: flex;
+            flex-direction: column;
+            max-height: 340px;
+            overflow-y: auto;
+        }
+
+        .block-menu-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-6);
+            width: 100%;
+            padding: var(--space-3) var(--space-4);
+            border: none;
+            background: transparent;
+            text-align: left;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+
+        .block-menu-item.selected {
+            background: var(--accent-primary-soft);
+        }
+
+        .bm-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            width: 96px;
+            flex-shrink: 0;
+        }
+
+        .bm-label {
+            font: var(--text-meta-medium);
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .block-menu-item.selected .bm-label {
+            color: var(--accent-primary);
+        }
+
+        .bm-hint {
+            font: 10px/1.3 var(--font-code);
+            color: var(--text-muted);
+        }
+
+        /* Live preview of the block's own text in the target format. Mirrors
+           the editor's type scale, shrunk to a single clipped line. */
+        .bm-preview {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            color: var(--text-primary);
+        }
+
+        .bm-preview>* {
+            margin: 0;
+            padding: 0;
+            font-size: 13px;
+            line-height: 1.35;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bm-preview h1,
+        .bm-preview h2,
+        .bm-preview h3,
+        .bm-preview h4,
+        .bm-preview h5,
+        .bm-preview h6 {
+            font-weight: 600;
+        }
+
+        .bm-preview h1 {
+            font-size: 19px;
+        }
+
+        .bm-preview h2 {
+            font-size: 17px;
+        }
+
+        .bm-preview h1,
+        .bm-preview h2 {
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 2px;
+        }
+
+        .bm-preview h3 {
+            font-size: 15px;
+        }
+
+        .bm-preview h4 {
+            font-size: 14px;
+        }
+
+        .bm-preview h6 {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .bm-preview blockquote {
+            border-left: 2px solid var(--accent-primary);
+            background: var(--accent-primary-soft);
+            border-radius: 0 3px 3px 0;
+            padding: 2px 6px;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        .bm-preview pre {
+            background: var(--bg-inset);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            padding: 3px 6px;
+            font: 11px/1.4 var(--font-code);
+        }
+
+        .bm-preview .bm-row {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .bm-preview .bm-marker {
+            flex-shrink: 0;
+            color: var(--text-muted);
+        }
+
+        .bm-preview input {
+            width: 11px;
+            height: 11px;
+            margin: 0;
+            flex-shrink: 0;
+            accent-color: var(--accent-primary);
+        }
+
+        .bm-preview .bm-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .block-menu-empty {
+            padding: var(--space-4);
+            font: var(--text-meta);
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* ============================================================
+           16. FIND BAR (⌘F / Ctrl+F)
+           ============================================================ */
+        .find-bar {
+            position: fixed;
+            top: calc(var(--app-bar-height) + var(--command-bar-height) + var(--space-4));
+            right: var(--space-8);
+            z-index: 700;
+            width: 328px;
+            display: none;
+            align-items: center;
+            padding: var(--space-3);
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-large);
+        }
+
+        .find-bar.show {
+            display: flex;
+        }
+
+        .find-bar:focus-within {
+            border-color: var(--accent-primary);
+        }
+
+        .is-android .find-bar {
+            top: calc(var(--app-bar-height) + var(--space-4));
+            right: var(--space-4);
+            left: var(--space-4);
+            width: auto;
+        }
+
+        .is-tauri .find-bar {
+            background: color-mix(in srgb, var(--bg-surface-elevated) 82%, transparent);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            backdrop-filter: blur(30px) saturate(180%);
+        }
+
+        .find-field {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            flex: 1;
+            min-width: 0;
+            padding-left: var(--space-3);
+        }
+
+        .find-icon {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .find-input {
+            flex: 1;
+            min-width: 0;
+            height: 22px;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font: var(--text-body);
+            outline: none;
+        }
+
+        .find-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .find-count {
+            font: var(--text-meta);
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+            padding-left: var(--space-4);
+        }
+
+        .find-sep {
+            width: 1px;
+            height: 18px;
+            flex-shrink: 0;
+            background: var(--border-subtle);
+            margin: 0 var(--space-3);
+        }
+
+        .find-btn {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            font-size: 10px;
+            cursor: pointer;
+            transition: background 0.1s, color 0.1s;
+        }
+
+        .find-btn:hover {
+            background: var(--bg-surface-hover);
+            color: var(--text-primary);
+        }
+
+        .find-btn[disabled] {
+            color: var(--text-muted);
+            opacity: 0.4;
+            cursor: default;
+        }
+
+        .find-btn[disabled]:hover {
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        ::highlight(md-find) {
+            background: var(--accent-warning-soft);
+            color: inherit;
+        }
+
+        ::highlight(md-find-current) {
+            background: var(--accent-warning);
+            color: #1A1D23;
+        }
+
+        @media print {
+
+            .find-bar,
+            .block-tools,
+            .block-menu,
+            .copy-float {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 
@@ -1659,6 +2692,11 @@
                 <img src="icon.png" alt="App Icon" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
             <span class="app-bar-title">WYSIWYG MD</span>
+        </div>
+
+        <div class="doc-title tauri-only" id="docTitle">
+            <span class="doc-name" id="docName">Untitled</span>
+            <span class="doc-edited" id="docEdited" hidden>— Edited</span>
         </div>
 
         <div class="app-bar-spacer"></div>
@@ -1689,6 +2727,15 @@
                     </button>
                     <div class="overflow-divider"></div>
                     <div class="theme-picker-section">
+                        <div class="theme-picker-section-header">
+                            <i class="fas fa-circle-half-stroke"></i> System
+                        </div>
+                        <div class="theme-picker">
+                            <div class="theme-card" data-theme-name="auto">
+                                <div class="theme-card-dot"></div>
+                                <div class="theme-card-name">Auto</div>
+                            </div>
+                        </div>
                         <div class="theme-picker-section-header">
                             <i class="fas fa-sun"></i> Light
                         </div>
@@ -1863,6 +2910,9 @@
         </button>
     </nav>
 
+    <!-- ======== TAB STRIP (desktop, multi-document) ======== -->
+    <div class="tab-strip" id="tabStrip" role="tablist" aria-label="Open documents"></div>
+
     <!-- ======== WORKSPACE ======== -->
     <main class="workspace">
         <div class="editor-container" id="editorContainer">
@@ -1958,6 +3008,130 @@
         </div>
     </div>
 
+    <!-- ======== SAVE CHANGES MODAL (Tauri desktop only) ======== -->
+    <div class="modal-overlay" id="saveChangesModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h2 class="modal-title" id="saveChangesTitle">Save changes?</h2>
+                <button class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="form-help" style="font: var(--text-body); color: var(--text-secondary);">
+                    Your changes will be lost if you don't save them.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="dontSaveBtn">Don't Save</button>
+                <div class="footer-spacer"></div>
+                <button class="btn btn-secondary" data-close-modal>Cancel</button>
+                <button class="btn btn-primary" id="saveAndCloseBtn">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== SELECTION COUNT POPUP ======== -->
+    <div class="modal-overlay" id="countModal">
+        <div class="modal-dialog" style="max-width: 360px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Selection count</h2>
+                <button class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="count-stats">
+                    <div class="count-stat">
+                        <span class="count-stat-label">Words</span>
+                        <span class="count-stat-value" id="countWords">0</span>
+                    </div>
+                    <div class="count-stat">
+                        <span class="count-stat-label">Characters</span>
+                        <span class="count-stat-value" id="countChars">0</span>
+                    </div>
+                    <div class="count-stat">
+                        <span class="count-stat-label">Characters (no spaces)</span>
+                        <span class="count-stat-value" id="countCharsNoSpaces">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-close-modal>Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== PASTE AS MODAL ========
+         Spreadsheets put a bitmap snapshot, the real markup and a tab-separated
+         text version on the clipboard at once; this lets the user pick. -->
+    <div class="modal-overlay" id="pasteAsModal" role="dialog" aria-modal="true" aria-labelledby="pasteAsTitle">
+        <div class="modal-dialog" style="max-width: 380px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="pasteAsTitle">Paste as</h2>
+                <button class="modal-close" data-paste-as="cancel" aria-label="Cancel paste">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="paste-as-options">
+                    <button class="paste-as-option" data-paste-as="table">
+                        <i class="fas fa-table"></i>
+                        <span class="paste-as-option-name">Table</span>
+                        <kbd class="paste-as-key"></kbd>
+                    </button>
+                    <button class="paste-as-option" data-paste-as="text">
+                        <i class="fas fa-align-left"></i>
+                        <span class="paste-as-option-name">Plain text</span>
+                        <kbd class="paste-as-key"></kbd>
+                    </button>
+                    <button class="paste-as-option" data-paste-as="image">
+                        <i class="fas fa-image"></i>
+                        <span class="paste-as-option-name">Image</span>
+                        <kbd class="paste-as-key"></kbd>
+                    </button>
+                </div>
+                <p class="form-help">Press the number, or <kbd class="paste-as-key">Esc</kbd> to cancel.
+                    <span id="pasteAsPlainHint"></span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======== FIND BAR ======== -->
+    <div class="find-bar" id="findBar" role="search">
+        <span class="find-field">
+            <i class="fas fa-magnifying-glass find-icon" aria-hidden="true"></i>
+            <input class="find-input" id="findInput" type="text" placeholder="Find in document" autocomplete="off"
+                spellcheck="false" aria-label="Find in document">
+        </span>
+        <span class="find-count" id="findCount" aria-live="polite"></span>
+        <span class="find-sep" aria-hidden="true"></span>
+        <button class="find-btn" id="findPrevBtn" title="Previous match (Shift+Enter)" aria-label="Previous match">
+            <i class="fas fa-chevron-up"></i>
+        </button>
+        <button class="find-btn" id="findNextBtn" title="Next match (Enter)" aria-label="Next match">
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <button class="find-btn" id="findCloseBtn" title="Close (Esc)" aria-label="Close find">
+            <i class="fas fa-xmark"></i>
+        </button>
+    </div>
+
+    <!-- ======== BLOCK TOOLS + BLOCK FORMAT MENU ======== -->
+    <div class="block-tools" id="blockTools">
+        <button class="block-tool block-tool-format" id="blockFormatBtn" title="Change block format (Ctrl+K)"
+            aria-label="Change block format">
+            <i class="fas fa-heading"></i>
+        </button>
+        <button class="block-tool" id="blockCopyBtn" title="Copy" aria-label="Copy">
+            <i class="fas fa-copy"></i>
+        </button>
+    </div>
+
+    <button class="copy-float" id="copyFloat" title="Copy with formatting" aria-label="Copy block with formatting">
+        <i class="fas fa-copy"></i>
+    </button>
+
+    <div class="block-menu" id="blockMenu" role="menu" aria-label="Block format">
+        <input class="block-menu-filter" id="blockMenuFilter" type="text" placeholder="Change format to…"
+            autocomplete="off" spellcheck="false" aria-label="Filter formats">
+        <div class="block-menu-list" id="blockMenuList"></div>
+    </div>
+
     <!-- ======== JAVASCRIPT ======== -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -1966,6 +3140,73 @@
                ========================================================== */
             const $ = sel => document.querySelector(sel);
             const $$ = sel => [...document.querySelectorAll(sel)];
+
+            const IS_TAURI = !!window.__TAURI__;
+            const IS_ANDROID = !!window.AndroidBridge;
+
+            /* ------------------------------------------------------------
+               In the macOS desktop shell, Font Awesome glyphs are swapped
+               for SF-Symbols-style line icons. The web build keeps FA.
+               ------------------------------------------------------------ */
+            const MAC_ICONS = {
+                'fa-rotate-left': '<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>',
+                'fa-rotate-right': '<polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>',
+                'fa-bold': '<path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/>',
+                'fa-italic': '<line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/>',
+                'fa-strikethrough': '<path d="M16.5 6.5c-.9-1.3-2.5-2-4.5-2-2.8 0-4.7 1.4-4.7 3.4 0 1.3.7 2.3 2.2 3"/><path d="M8 17c.8 1.6 2.5 2.5 4.6 2.5 2.9 0 4.7-1.4 4.7-3.5 0-1-.4-1.8-1.3-2.4"/><line x1="4" y1="12" x2="20" y2="12"/>',
+                'fa-code': '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+                'fa-droplet-slash': '<path d="M18.7 13.9A6.5 6.5 0 0 0 17 10.6L12 4.7 9.4 7.7"/><path d="M6.2 10.8a6.5 6.5 0 0 0 9.9 8.3"/><line x1="3" y1="3" x2="21" y2="21"/>',
+                'fa-list-ul': '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>',
+                'fa-list-ol': '<line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/>',
+                'fa-list-check': '<line x1="11" y1="6" x2="21" y2="6"/><line x1="11" y1="12" x2="21" y2="12"/><line x1="11" y1="18" x2="21" y2="18"/><polyline points="3 6 4.5 7.5 7.5 4.5"/><polyline points="3 12 4.5 13.5 7.5 10.5"/>',
+                'fa-indent': '<polyline points="3 8 7 12 3 16"/><line x1="21" y1="6" x2="11" y2="6"/><line x1="21" y1="12" x2="11" y2="12"/><line x1="21" y1="18" x2="11" y2="18"/>',
+                'fa-outdent': '<polyline points="7 8 3 12 7 16"/><line x1="21" y1="6" x2="11" y2="6"/><line x1="21" y1="12" x2="11" y2="12"/><line x1="21" y1="18" x2="11" y2="18"/>',
+                'fa-link': '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+                'fa-image': '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
+                'fa-table': '<rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="10" x2="9" y2="20"/><line x1="15" y1="10" x2="15" y2="20"/>',
+                'fa-minus': '<line x1="5" y1="12" x2="19" y2="12"/>',
+                'fa-align-left': '<line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/>',
+                'fa-align-center': '<line x1="18" y1="10" x2="6" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="18" y1="18" x2="6" y2="18"/>',
+                'fa-align-right': '<line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/>',
+                'fa-expand': '<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
+                'fa-eraser': '<path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/>',
+                'fa-book-open': '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+                'fa-ellipsis-vertical': '<circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>',
+                'fa-file-pdf': '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+                'fa-sun': '<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>',
+                'fa-moon': '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
+                'fa-palette': '<circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>',
+                'fa-circle-half-stroke': '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none"/>',
+                'fa-xmark': '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+                'fa-markdown': '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M5 15v-5.5l2.5 2.5L10 9.5V15"/><path d="M16 9.5V15"/><polyline points="13.5 12.5 16 15 18.5 12.5"/>',
+                'fa-font': '<polyline points="4 7 4 4 20 4 20 7"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="9" y1="20" x2="15" y2="20"/>',
+                'fa-circle-check': '<circle cx="12" cy="12" r="9"/><polyline points="8.5 12.5 11 15 15.5 9.5"/>',
+                'fa-circle-exclamation': '<circle cx="12" cy="12" r="9"/><line x1="12" y1="7.5" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12.01" y2="16.5"/>',
+                'fa-circle-info': '<circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><line x1="12" y1="7.5" x2="12.01" y2="7.5"/>',
+                'fa-magnifying-glass': '<circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/>',
+                'fa-chevron-up': '<polyline points="6 15 12 9 18 15"/>',
+                'fa-chevron-down': '<polyline points="6 9 12 15 18 9"/>',
+                'fa-copy': '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>',
+                'fa-heading': '<line x1="6" y1="4" x2="6" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/><line x1="6" y1="12" x2="18" y2="12"/>',
+            };
+
+            function iconHTML(faName) {
+                if (IS_TAURI && MAC_ICONS[faName]) {
+                    return `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${MAC_ICONS[faName]}</svg>`;
+                }
+                return `<i class="fas ${faName}"></i>`;
+            }
+
+            function swapIconsForMac() {
+                if (!IS_TAURI) return;
+                $$('i[class*="fa-"]').forEach(el => {
+                    const name = [...el.classList].find(c => MAC_ICONS[c]);
+                    if (!name) return;
+                    const wrap = document.createElement('span');
+                    wrap.innerHTML = iconHTML(name);
+                    el.replaceWith(wrap.firstChild);
+                });
+            }
 
             const visualEditor = $('#visualEditor');
             const wordCountText = $('#wordCount');
@@ -1999,6 +3240,7 @@
             // Modals
             const linkModal = $('#linkModal');
             const imageModal = $('#imageModal');
+            const countModal = $('#countModal');
             const confirmLinkBtn = $('#confirmLinkBtn');
             const confirmImageBtn = $('#confirmImageBtn');
             const linkURLInput = $('#linkURL');
@@ -2100,7 +3342,7 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
                 const toast = document.createElement('div');
                 toast.className = `toast toast-${type}`;
                 const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
-                toast.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> ${message}`;
+                toast.innerHTML = `${iconHTML(icons[type] || icons.info)} ${message}`;
                 $('#toastContainer').appendChild(toast);
                 requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
                 setTimeout(() => {
@@ -2116,8 +3358,10 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
             }
 
             function initTheme() {
+                // Desktop default: follow the macOS system appearance.
                 const saved = localStorage.getItem('md-theme') ||
-                    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                    (IS_TAURI ? 'auto' :
+                        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
                 setTheme(saved);
             }
 
@@ -2634,6 +3878,21 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
 
             function exportPDF() {
                 overflowMenu.classList.remove('show');
+                if (IS_ANDROID) {
+                    // window.print() is a no-op in Android WebView; the shell
+                    // routes through the system print framework (print-to-PDF).
+                    window.AndroidBridge.exportPdf(document.title || 'Document');
+                    return;
+                }
+                if (IS_TAURI) {
+                    // Same story in macOS WKWebView: window.print() returns
+                    // silently. The Rust side runs a real NSPrintOperation.
+                    showToast('Opening print dialog...', 'info');
+                    window.__TAURI__.core.invoke('export_pdf').catch(err => {
+                        showToast('Could not open the print dialog: ' + err, 'error');
+                    });
+                    return;
+                }
                 showToast('Opening print dialog...', 'info');
                 setTimeout(() => window.print(), 350);
             }
@@ -2643,6 +3902,26 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
                 const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
                 wordCountText.textContent = `${words} word${words === 1 ? '' : 's'}`;
             }
+
+            /* Count words/characters for the current text selection and show them
+               in a dismissible popup (⌘⇧C on desktop, context menu on Android). */
+            function showSelectionCount() {
+                const text = window.getSelection()?.toString() || '';
+                if (!text.trim()) {
+                    showToast('Select some text first', 'info');
+                    return;
+                }
+                const words = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+                const chars = [...text].length;
+                const charsNoSpaces = [...text.replace(/\s/g, '')].length;
+                $('#countWords').textContent = words.toLocaleString();
+                $('#countChars').textContent = chars.toLocaleString();
+                $('#countCharsNoSpaces').textContent = charsNoSpaces.toLocaleString();
+                openModal(countModal);
+            }
+
+            // Exposed so the Android shell's text-selection menu item can trigger it.
+            window.__wymdShowCount = showSelectionCount;
 
             /* ==========================================================
                CORE LOGIC (MD <-> HTML)
@@ -2747,6 +4026,14 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
             }
 
             function closeModal(modal, shouldRestoreSelection = true) {
+                // The paste chooser owns a pending promise, so generic closes
+                // (Android system back, the global Escape handler) must cancel
+                // it rather than just hiding the dialog.
+                if (modal === pasteAsModal && pasteAsResolve) {
+                    resolvePasteFormat(null);
+                    return;
+                }
+
                 modal.classList.remove('show');
                 modal.querySelectorAll('.form-input').forEach(input => {
                     if (input.type === 'color') return;
@@ -2755,6 +4042,141 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
                 });
                 visualEditor.focus();
                 if (shouldRestoreSelection) restoreSelection();
+            }
+
+            /* ==========================================================
+               PASTE-AS CHOOSER
+               ========================================================== */
+            const pasteAsModal = $('#pasteAsModal');
+            let pasteAsResolve = null;
+
+            // The plain-paste shortcut only exists in the browser build: the
+            // native shells route paste through their own menus, which have no
+            // "paste and match style" item to hand the keystroke to the webview.
+            const isNativeShell = document.documentElement.classList.contains('is-tauri')
+                || document.documentElement.classList.contains('is-android');
+            if (!isNativeShell) {
+                const combo = /Mac|iPhone|iPad/.test(navigator.platform) ? '⇧⌘V' : 'Ctrl+Shift+V';
+                $('#pasteAsPlainHint').innerHTML =
+                    `<kbd class="paste-as-key">${combo}</kbd> always pastes plain text.`;
+            }
+
+            // `allow` is a subset of ['table', 'text', 'image'] in display order;
+            // the accelerator digits are assigned to whatever is actually shown.
+            function askPasteFormat(allow) {
+                const options = $$('#pasteAsModal .paste-as-option');
+                let digit = 0;
+                options.forEach(btn => {
+                    const enabled = allow.includes(btn.dataset.pasteAs);
+                    btn.hidden = !enabled;
+                    btn.dataset.accel = enabled ? String(++digit) : '';
+                    btn.querySelector('.paste-as-key').textContent = btn.dataset.accel;
+                });
+
+                pasteAsModal.classList.add('show');
+                setTimeout(() => options.find(btn => !btn.hidden)?.focus(), 80);
+                return new Promise(resolve => { pasteAsResolve = resolve; });
+            }
+
+            function resolvePasteFormat(choice) {
+                pasteAsModal.classList.remove('show');
+                visualEditor.focus();
+                restoreSelection();
+                const resolve = pasteAsResolve;
+                pasteAsResolve = null;
+                resolve?.(choice);
+            }
+
+            pasteAsModal.addEventListener('click', e => {
+                const btn = e.target.closest('[data-paste-as]');
+                if (btn) {
+                    resolvePasteFormat(btn.dataset.pasteAs === 'cancel' ? null : btn.dataset.pasteAs);
+                } else if (e.target === pasteAsModal) {
+                    resolvePasteFormat(null);
+                }
+            });
+
+            pasteAsModal.addEventListener('keydown', e => {
+                if (e.key === 'Escape') {
+                    e.stopPropagation();
+                    resolvePasteFormat(null);
+                    return;
+                }
+
+                const options = $$('#pasteAsModal .paste-as-option:not([hidden])');
+                const byDigit = options.find(btn => btn.dataset.accel === e.key);
+                if (byDigit) {
+                    e.preventDefault();
+                    resolvePasteFormat(byDigit.dataset.pasteAs);
+                    return;
+                }
+
+                const back = e.key === 'ArrowLeft' || e.key === 'ArrowUp' || (e.key === 'Tab' && e.shiftKey);
+                const forward = e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'Tab';
+                if (!back && !forward) return;
+
+                e.preventDefault();
+                const index = options.indexOf(document.activeElement);
+                const next = index < 0
+                    ? (back ? options.length - 1 : 0)
+                    : (index + (back ? -1 : 1) + options.length) % options.length;
+                options[next]?.focus();
+            });
+
+            // Round-trip pasted markup through Markdown so the spreadsheet's
+            // mso-* styling, <style> blocks and stray wrappers are dropped and
+            // we end up with the same clean table markup insertTable() writes.
+            function insertPastedMarkup(html) {
+                const host = document.createElement('div');
+                host.innerHTML = html;
+                host.querySelectorAll('style, script, meta, link, title').forEach(node => node.remove());
+
+                const markdown = turndownService.turndown(host.innerHTML).trim();
+                if (!markdown) return false;
+
+                const parsed = document.createElement('div');
+                parsed.innerHTML = window.marked.parse(markdown);
+                if (!parsed.firstChild) return false;
+
+                const range = getEditorRangeOrEnd();
+                range.deleteContents();
+
+                const fragment = document.createDocumentFragment();
+                let lastNode = null;
+                while (parsed.firstChild) {
+                    lastNode = parsed.firstChild;
+                    fragment.appendChild(lastNode);
+                }
+
+                // A table can't legally live inside the caret's paragraph, so
+                // block-level content is dropped after that block instead.
+                const startNode = range.startContainer;
+                const startElement = startNode.nodeType === 1 ? startNode : startNode.parentElement;
+                const topBlock = startElement?.closest('#visualEditor > *');
+                const isBlockPaste = [...fragment.children]
+                    .some(el => /^(TABLE|P|H[1-6]|UL|OL|PRE|BLOCKQUOTE|HR)$/.test(el.tagName));
+
+                if (isBlockPaste && topBlock?.parentNode === visualEditor) {
+                    visualEditor.insertBefore(fragment, topBlock.nextSibling);
+                    // Pasting into an empty paragraph shouldn't leave it behind.
+                    if (!topBlock.textContent.trim() && !topBlock.querySelector('img, hr')) {
+                        topBlock.remove();
+                    }
+                } else {
+                    range.insertNode(fragment);
+                }
+
+                placeCaretAtEnd(lastNode);
+                updateEditorAfterCustomChange();
+                return true;
+            }
+
+            function insertPlainText(text) {
+                const range = getEditorRangeOrEnd();
+                range.deleteContents();
+                setRange(range);
+                document.execCommand('insertText', false, text);
+                updateEditorAfterCustomChange();
             }
 
             /* ==========================================================
@@ -2786,6 +4208,10 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
                 updateToolbarState();
             });
 
+            // ⌘⇧V / Ctrl+Shift+V — the OS-wide "paste and match style" gesture.
+            // The paste event carries no modifier state, so latch it on keydown.
+            let pastePlainRequested = false;
+
             visualEditor.addEventListener('keydown', e => {
                 if ((e.key === 'Backspace' || e.key === 'Delete') && selectedImage) {
                     e.preventDefault();
@@ -2794,23 +4220,61 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
                     img.remove();
                     updateEditorAfterCustomChange();
                 }
+
+                if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'v') {
+                    pastePlainRequested = true;
+                    setTimeout(() => { pastePlainRequested = false; }, 500);
+                }
             });
 
             visualEditor.addEventListener('paste', async e => {
-                const items = [...(e.clipboardData?.items || [])];
-                const imageItem = items.find(item => item.type.startsWith('image/'));
-                if (!imageItem) return;
+                if (!e.clipboardData) return;
+
+                const plainRequested = pastePlainRequested;
+                pastePlainRequested = false;
+
+                const text = e.clipboardData.getData('text/plain');
+                const html = e.clipboardData.getData('text/html');
+                const imageItem = [...(e.clipboardData.items || [])]
+                    .find(item => item.type.startsWith('image/'));
+                // Clipboard items die with the event, so take the File up front —
+                // the chooser below awaits a user interaction.
+                const imageFile = imageItem?.getAsFile() || null;
+
+                if (plainRequested && text) {
+                    e.preventDefault();
+                    insertPlainText(text);
+                    return;
+                }
+
+                // Text-only clipboard: the browser's own paste is fine.
+                if (!imageFile) return;
 
                 e.preventDefault();
                 saveSelection();
 
+                // Spreadsheets hand over a bitmap snapshot *and* the real
+                // markup, so only prompt when there is a genuine choice.
+                const options = [];
+                if (/<table[\s>]/i.test(html)) options.push('table');
+                if (text.trim()) options.push('text');
+                options.push('image');
+
+                const choice = options.length > 1 ? await askPasteFormat(options) : 'image';
+                if (!choice) return;
+
                 try {
-                    const file = imageItem.getAsFile();
                     restoreSelection();
-                    await insertImageFile(file, 'Pasted image');
+                    if (choice === 'table') {
+                        if (!insertPastedMarkup(html)) insertPlainText(text);
+                    } else if (choice === 'text') {
+                        insertPlainText(text);
+                    } else {
+                        await insertImageFile(imageFile, 'Pasted image');
+                    }
                 } catch (error) {
-                    console.warn('Image paste failed:', error);
-                    showToast('Could not paste image', 'error');
+                    console.warn('Paste failed:', error);
+                    showToast('Could not paste clipboard contents', 'error');
                 }
             });
 
@@ -2820,8 +4284,7 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
             });
 
             blockFormatSelect.addEventListener('change', e => {
-                const val = e.target.value;
-                executeCommand('formatBlock', val);
+                formatCaretBlock(e.target.value);
             });
 
             clearFormatBtn.addEventListener('click', () => executeCommand('removeFormat'));
@@ -2835,8 +4298,16 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
                 button.addEventListener('click', () => setImageAlignment(align));
             });
 
-            uploadBtn.addEventListener('click', () => fileInput.click());
-            downloadBtn.addEventListener('click', downloadFile);
+            // Native shells (Android) swap in real file dialogs via these hooks;
+            // the plain web build keeps the <input type=file> / blob download.
+            uploadBtn.addEventListener('click', () => {
+                if (window.__wymdPlatformOpen) return window.__wymdPlatformOpen();
+                fileInput.click();
+            });
+            downloadBtn.addEventListener('click', () => {
+                if (window.__wymdPlatformSave) return window.__wymdPlatformSave();
+                downloadFile();
+            });
             fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
 
             visualEditor.addEventListener('dragover', e => e.preventDefault());
@@ -2889,10 +4360,30 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
             $('#readerModeBtn').addEventListener('click', toggleReaderMode);
             $('#closeReaderModeBtn').addEventListener('click', closeReaderMode);
             document.addEventListener('keydown', e => {
+                // ⌘⇧C / Ctrl+Shift+C — word & character count for the selection.
+                if ((e.metaKey || e.ctrlKey) && e.shiftKey && !e.altKey && e.key.toLowerCase() === 'c') {
+                    e.preventDefault();
+                    showSelectionCount();
+                    return;
+                }
+
+                const shownModal = $('.modal-overlay.show');
                 if (e.key === 'Escape') {
+                    if (shownModal) {
+                        closeModal(shownModal);
+                        return;
+                    }
                     closeReaderMode();
                     clearSelectedImage();
                     updateToolbarState();
+                }
+                // Enter confirms the frontmost dialog (macOS convention).
+                if (e.key === 'Enter' && shownModal && e.target.tagName !== 'BUTTON' && e.target.tagName !== 'SELECT') {
+                    const primary = shownModal.querySelector('.modal-footer .btn-primary');
+                    if (primary) {
+                        e.preventDefault();
+                        primary.click();
+                    }
                 }
             });
 
@@ -2926,9 +4417,823 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
             });
 
             /* ==========================================================
+               CLIPBOARD, FIND, BLOCK MENU & MARKDOWN PREFIXES
+               ========================================================== */
+            const editorContainerEl = $('#editorContainer');
+            const readerOverlay = $('#readerModeOverlay');
+            const readerContent = $('#readerModeContent');
+            const blockTools = $('#blockTools');
+            const blockFormatBtn = $('#blockFormatBtn');
+            const blockCopyBtn = $('#blockCopyBtn');
+            const blockMenu = $('#blockMenu');
+            const blockMenuFilter = $('#blockMenuFilter');
+            const blockMenuList = $('#blockMenuList');
+            const findBar = $('#findBar');
+            const findInput = $('#findInput');
+            const findCountEl = $('#findCount');
+
+            const HOVER_CAPABLE = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            const BLOCK_SELECTOR = 'p,h1,h2,h3,h4,h5,h6,blockquote,pre,li,td,th';
+
+            async function copyToClipboard(text) {
+                if (!text) return false;
+                if (navigator.clipboard?.writeText) {
+                    try {
+                        await navigator.clipboard.writeText(text);
+                        return true;
+                    } catch { /* fall through to the execCommand path */ }
+                }
+                const sel = window.getSelection();
+                const restore = sel?.rangeCount ? sel.getRangeAt(0).cloneRange() : null;
+                const scratch = document.createElement('textarea');
+                scratch.value = text;
+                scratch.setAttribute('readonly', '');
+                scratch.style.cssText = 'position:fixed;top:-1000px;left:0;opacity:0';
+                document.body.appendChild(scratch);
+                scratch.select();
+                let ok = false;
+                try { ok = document.execCommand('copy'); } catch { ok = false; }
+                scratch.remove();
+                if (restore) setRange(restore);
+                return ok;
+            }
+
+            function blockPlainText(block) {
+                return (block.innerText || block.textContent || '')
+                    .replace(/ /g, ' ')
+                    .replace(/\s+$/, '');
+            }
+
+            // The innermost formattable element containing `node`, falling back
+            // to the top-level child of the surface it lives in.
+            function resolveBlock(node, root) {
+                if (!node) return null;
+                const el = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+                if (!el || !root.contains(el)) return null;
+                const match = el.closest(BLOCK_SELECTOR);
+                if (match && root.contains(match)) return match;
+                let cur = el;
+                while (cur && cur.parentElement !== root) cur = cur.parentElement;
+                return cur && cur !== root ? cur : null;
+            }
+
+            /* ---------- Hover / tap tools: copy + change format ---------- */
+            let toolsBlock = null;
+
+            // What the tools point at: the selected text if there is a selection
+            // inside the block, otherwise the block's first line.
+            function toolsAnchor(block) {
+                const selection = window.getSelection();
+                if (selection && !selection.isCollapsed && selection.rangeCount) {
+                    const range = selection.getRangeAt(0);
+                    const node = range.startContainer;
+                    const el = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+                    const rect = range.getBoundingClientRect();
+                    if (block.contains(el) && (rect.width || rect.height)) {
+                        return { rect, centered: true };
+                    }
+                }
+                return { rect: block.getClientRects()[0] || block.getBoundingClientRect(), centered: false };
+            }
+
+            // Floats just above what it acts on — centred over a selection, or
+            // over the start of the block — and flips below when the top of the
+            // scroll area is in the way.
+            function positionBlockTools() {
+                if (!toolsBlock?.isConnected) { hideBlockTools(true); return; }
+                const { rect: anchor, centered } = toolsAnchor(toolsBlock);
+                const { width, height } = blockTools.getBoundingClientRect();
+                const gap = 6;
+                const scroller = toolsBlock.closest('#readerModeContent') ? readerOverlay : editorContainerEl;
+                const box = scroller.getBoundingClientRect();
+                const minTop = box.top + gap;
+                const maxTop = box.bottom - height - gap;
+
+                let top = anchor.top - height - gap;
+                if (top < minTop) top = anchor.bottom + gap;
+                const left = centered ? anchor.left + anchor.width / 2 - width / 2 : anchor.left - 2;
+
+                blockTools.style.top = `${Math.min(Math.max(top, minTop), Math.max(minTop, maxTop))}px`;
+                blockTools.style.left = `${Math.max(6, Math.min(left, window.innerWidth - width - 6))}px`;
+            }
+
+            function showBlockTools(block, mode) {
+                if (!block) return;
+                toolsBlock = block;
+                blockTools.classList.toggle('copy-only', mode === 'read');
+                blockTools.classList.add('show');
+                positionBlockTools();
+            }
+
+            function hideBlockTools(force = false) {
+                if (!force && blockMenu.classList.contains('show')) return;
+                blockTools.classList.remove('show');
+                toolsBlock = null;
+            }
+
+            // While text is selected the toolbar belongs to that selection —
+            // otherwise hovering the block above it (which the toolbar floats
+            // over) would yank the toolbar away as the pointer travels to it.
+            function selectionOwnsTools(root) {
+                const selection = window.getSelection();
+                if (!selection || selection.isCollapsed || !selection.rangeCount) return false;
+                const node = selection.anchorNode;
+                const el = node?.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+                return !!el && root.contains(el);
+            }
+
+            // The tools ride on the selection only — never on hover, so an idle
+            // pointer leaves the document alone. Reader mode gets copy only.
+            function trackBlockTools(container, root, mode) {
+                const showForSelection = () => {
+                    if (!selectionOwnsTools(root)) return;
+                    const block = resolveBlock(window.getSelection().anchorNode, root);
+                    if (block) showBlockTools(block, mode);
+                };
+
+                // Settled selections only: waiting for the gesture to end keeps
+                // the toolbar from skittering around mid-drag.
+                container.addEventListener('mouseup', showForSelection);
+                container.addEventListener('keyup', showForSelection);
+
+                document.addEventListener('selectionchange', () => {
+                    if (selectionOwnsTools(root)) {
+                        // Touch selection never sends mouseup, so show it here.
+                        if (!HOVER_CAPABLE) showForSelection();
+                        else if (blockTools.classList.contains('show')) positionBlockTools();
+                    } else if (toolsBlock && root.contains(toolsBlock)) {
+                        hideBlockTools();
+                    }
+                });
+
+                container.addEventListener('scroll', () => {
+                    if (blockTools.classList.contains('show')) positionBlockTools();
+                });
+            }
+
+            // Android has its own selection menu (Copy / Count / Format), so the
+            // web toolbar would only double up on it there.
+            if (!IS_ANDROID) {
+                trackBlockTools(editorContainerEl, visualEditor, 'edit');
+                trackBlockTools(readerOverlay, readerContent, 'read');
+            }
+
+            blockCopyBtn.addEventListener('mousedown', e => e.preventDefault());
+            blockCopyBtn.addEventListener('click', async () => {
+                const text = window.getSelection()?.toString() || '';
+                if (!text) return;
+                const ok = await copyToClipboard(text);
+                showToast(ok ? 'Copied selection' : 'Could not copy', ok ? 'success' : 'error');
+            });
+
+            /* ---------- Copy with formatting: code, quotes, tables, lists ----------
+               Standard prose (paragraphs, headings) carries no formatting worth
+               a dedicated button, so it is deliberately left out. */
+            const copyFloat = $('#copyFloat');
+            const FORMATTED_BLOCK_SELECTOR = 'pre,blockquote,table,ul,ol';
+            let copyFloatBlock = null;
+
+            function positionCopyFloat() {
+                if (!copyFloatBlock?.isConnected) { hideCopyFloat(); return; }
+                const rect = copyFloatBlock.getBoundingClientRect();
+                const { width, height } = copyFloat.getBoundingClientRect();
+                const scroller = copyFloatBlock.closest('#readerModeContent') ? readerOverlay : editorContainerEl;
+                const box = scroller.getBoundingClientRect();
+                const top = Math.min(Math.max(rect.top + 6, box.top + 6), box.bottom - height - 6);
+                copyFloat.style.top = `${top}px`;
+                copyFloat.style.left = `${Math.max(6, rect.right - width - 6)}px`;
+            }
+
+            function showCopyFloat(block) {
+                copyFloatBlock = block;
+                copyFloat.classList.add('show');
+                positionCopyFloat();
+            }
+
+            function hideCopyFloat() {
+                copyFloat.classList.remove('show');
+                copyFloatBlock = null;
+            }
+
+            // One block as Markdown (formatting intact) plus its HTML.
+            function serializeBlock(block) {
+                const clone = block.cloneNode(true);
+                clone.classList.remove('md-selected-image');
+                clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+                const wrap = document.createElement('div');
+                wrap.appendChild(clone);
+
+                // Image references are shared with the save path — keep this
+                // serialization from leaking into it.
+                resetEmbeddedImageReferences();
+                const body = turndownService.turndown(wrap.innerHTML).trim();
+                const references = buildEmbeddedImageReferenceBlock();
+                resetEmbeddedImageReferences();
+
+                return {
+                    markdown: references ? `${body}\n\n${references}` : body,
+                    html: wrap.innerHTML
+                };
+            }
+
+            async function copyBlockWithFormatting(block) {
+                const { markdown, html } = serializeBlock(block);
+                // Rich flavour for apps that take HTML, Markdown for the rest.
+                if (navigator.clipboard?.write && window.ClipboardItem) {
+                    try {
+                        await navigator.clipboard.write([new ClipboardItem({
+                            'text/plain': new Blob([markdown], { type: 'text/plain' }),
+                            'text/html': new Blob([html], { type: 'text/html' })
+                        })]);
+                        return true;
+                    } catch { /* fall through to Markdown only */ }
+                }
+                return copyToClipboard(markdown);
+            }
+
+            function trackCopyFloat(container, root) {
+                const blockUnder = e => {
+                    const block = e.target.closest?.(FORMATTED_BLOCK_SELECTOR);
+                    return block && root.contains(block) ? block : null;
+                };
+
+                container.addEventListener('mousemove', e => {
+                    if (!HOVER_CAPABLE) return;
+                    const block = blockUnder(e);
+                    if (!block) hideCopyFloat();
+                    else if (block === copyFloatBlock) positionCopyFloat();
+                    else showCopyFloat(block);
+                });
+                container.addEventListener('mouseleave', e => {
+                    if (!e.relatedTarget?.closest?.('.copy-float')) hideCopyFloat();
+                });
+                container.addEventListener('scroll', () => {
+                    if (copyFloat.classList.contains('show')) positionCopyFloat();
+                });
+                // Touch has no hover, so a tap inside the block stands in for it.
+                if (!HOVER_CAPABLE) {
+                    container.addEventListener('click', e => {
+                        const block = blockUnder(e);
+                        if (block) showCopyFloat(block);
+                        else hideCopyFloat();
+                    });
+                }
+            }
+
+            trackCopyFloat(editorContainerEl, visualEditor);
+            trackCopyFloat(readerOverlay, readerContent);
+
+            copyFloat.addEventListener('mousedown', e => e.preventDefault());
+            copyFloat.addEventListener('click', async () => {
+                if (!copyFloatBlock) return;
+                const ok = await copyBlockWithFormatting(copyFloatBlock);
+                showToast(ok ? 'Copied with formatting' : 'Could not copy', ok ? 'success' : 'error');
+            });
+
+            /* ---------- Block format menu (tools button / Ctrl+K) ---------- */
+
+            /* execCommand('formatBlock') is inconsistent between engines: WebKit
+               can leave the original block untouched (so "Paragraph" appears to
+               do nothing) and can drop the caret into the *following* block. The
+               swap below is plain DOM, so every engine behaves the same. */
+
+            // Contents of `source` with marked's paragraph/div wrappers flattened,
+            // so a quote's inner <p> doesn't end up nested in the new block.
+            function inlineContents(source) {
+                const fragment = document.createDocumentFragment();
+                [...source.childNodes].forEach(node => {
+                    if (node.nodeType === Node.ELEMENT_NODE && node.matches('p,div')) {
+                        fragment.append(...inlineContents(node).childNodes);
+                    } else {
+                        fragment.appendChild(node);
+                    }
+                });
+                return fragment;
+            }
+
+            function setBlockTag(block, tag) {
+                if (block.tagName.toLowerCase() === tag) return block;
+                const replacement = document.createElement(tag);
+                // Code comes across as plain text rather than markup.
+                if (block.tagName === 'PRE') replacement.textContent = blockPlainText(block);
+                else replacement.appendChild(inlineContents(block));
+                if (!replacement.firstChild) replacement.appendChild(document.createElement('br'));
+                block.replaceWith(replacement);
+                return replacement;
+            }
+
+            // Swap a block's tag and keep the caret inside it.
+            function applyBlockTag(block, tag) {
+                if (!block) return;
+                // Lists own their items, so leave that structure to execCommand.
+                if (block.tagName === 'LI') {
+                    executeCommand('formatBlock', tag);
+                    return;
+                }
+
+                const selection = window.getSelection();
+                const anchor = selection?.anchorNode;
+                const offset = selection?.anchorOffset ?? 0;
+                const replacement = setBlockTag(block, tag);
+
+                visualEditor.focus();
+                if (anchor?.isConnected) {
+                    const limit = anchor.nodeType === Node.TEXT_NODE ? anchor.length : anchor.childNodes.length;
+                    placeCaret(anchor, Math.min(offset, limit));
+                } else {
+                    placeCaret(replacement, 0);
+                }
+            }
+
+            // A quote's contents sit in a wrapper <p> (that is what marked emits),
+            // and reformatting that wrapper does nothing visible — "Paragraph"
+            // looks dead. The quote itself is the block being reformatted.
+            function formatTarget(block) {
+                if (block?.matches('p,div')) {
+                    const quote = block.parentElement?.closest('blockquote');
+                    if (quote && visualEditor.contains(quote)) return quote;
+                }
+                return block;
+            }
+
+            // Entry point for the toolbar dropdown and the macOS Format menu.
+            function formatCaretBlock(tag) {
+                visualEditor.focus();
+                const block = formatTarget(resolveBlock(window.getSelection()?.anchorNode, visualEditor));
+                if (!block) return;
+                if (tag === 'pre') convertBlockToCodeBlock(block);
+                else applyBlockTag(block, tag);
+                updateEditorAfterCustomChange();
+            }
+
+            function convertBlockToCodeBlock(block, lang = '', dropText = false) {
+                if (!block || block.tagName === 'PRE' || block.closest('pre')) return;
+                const pre = document.createElement('pre');
+                const code = document.createElement('code');
+                if (lang) code.className = `language-${lang}`;
+                const text = dropText ? '' : blockPlainText(block);
+                if (text) code.textContent = text;
+                pre.appendChild(code);
+                block.replaceWith(pre);
+                placeCaret(code, code.childNodes.length);
+            }
+
+            function createTaskItem(text, checked) {
+                const li = document.createElement('li');
+                li.setAttribute('data-task-item', 'true');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = !!checked;
+                checkbox.setAttribute('data-task-checkbox', 'true');
+                checkbox.setAttribute('contenteditable', 'false');
+                // A bare space keeps a text node for the caret to land in without
+                // dropping placeholder words in front of what the user types next.
+                const textNode = document.createTextNode(text ? ` ${text}` : ' ');
+                li.append(checkbox, textNode);
+                return { li, textNode };
+            }
+
+            // Turns a block into a task list. Whole lists convert item by item.
+            function convertBlockToTaskList(block, checked = false) {
+                if (!block) return;
+                const list = block.tagName === 'LI' ? block.closest('ul,ol') : null;
+                const sources = list
+                    ? [...list.children].filter(node => node.tagName === 'LI')
+                    : [block];
+                const ul = document.createElement('ul');
+                ul.setAttribute('data-task-list', 'true');
+                let lastTextNode = null;
+                sources.forEach(src => {
+                    const existing = [...src.children].find(child => child.matches?.('input[type="checkbox"]'));
+                    const clone = src.cloneNode(true);
+                    clone.querySelectorAll('input[type="checkbox"]').forEach(input => input.remove());
+                    const item = createTaskItem(
+                        (clone.textContent || '').replace(/ /g, ' ').trim(),
+                        existing ? existing.checked : checked
+                    );
+                    ul.appendChild(item.li);
+                    lastTextNode = item.textNode;
+                });
+                (list || block).replaceWith(ul);
+                if (lastTextNode) placeCaret(lastTextNode, lastTextNode.length);
+            }
+
+            const BLOCK_FORMATS = [
+                { label: 'Paragraph', tag: 'p', hint: '', apply: block => applyBlockTag(block, 'p') },
+                { label: 'Heading 1', tag: 'h1', hint: '#', apply: block => applyBlockTag(block, 'h1') },
+                { label: 'Heading 2', tag: 'h2', hint: '##', apply: block => applyBlockTag(block, 'h2') },
+                { label: 'Heading 3', tag: 'h3', hint: '###', apply: block => applyBlockTag(block, 'h3') },
+                { label: 'Heading 4', tag: 'h4', hint: '####', apply: block => applyBlockTag(block, 'h4') },
+                { label: 'Heading 5', tag: 'h5', hint: '#####', apply: block => applyBlockTag(block, 'h5') },
+                { label: 'Heading 6', tag: 'h6', hint: '######', apply: block => applyBlockTag(block, 'h6') },
+                { label: 'Quote', tag: 'blockquote', hint: '>', apply: block => applyBlockTag(block, 'blockquote') },
+                { label: 'Code Block', tag: 'pre', hint: '```', apply: block => convertBlockToCodeBlock(block) },
+                { label: 'Bullet List', tag: 'ul', hint: '-', apply: () => executeCommand('insertUnorderedList') },
+                { label: 'Numbered List', tag: 'ol', hint: '1.', apply: () => executeCommand('insertOrderedList') },
+                { label: 'Task List', tag: 'task', hint: '- [ ]', apply: block => convertBlockToTaskList(block) }
+            ];
+
+            let menuBlock = null;
+            let menuItems = [];
+            let menuIndex = 0;
+            let menuSampleText = '';
+
+            // Renders `text` the way the format will actually look, so the menu
+            // previews the real block rather than describing it.
+            function buildFormatPreview(tag, text) {
+                const preview = document.createElement('span');
+                preview.className = 'bm-preview';
+
+                if (['ul', 'ol', 'task'].includes(tag)) {
+                    const row = document.createElement('div');
+                    row.className = 'bm-row';
+                    if (tag === 'task') {
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.disabled = true;
+                        row.appendChild(checkbox);
+                    } else {
+                        const marker = document.createElement('span');
+                        marker.className = 'bm-marker';
+                        marker.textContent = tag === 'ol' ? '1.' : '•';
+                        row.appendChild(marker);
+                    }
+                    const label = document.createElement('span');
+                    label.className = 'bm-text';
+                    label.textContent = text;
+                    row.appendChild(label);
+                    preview.appendChild(row);
+                } else {
+                    const el = document.createElement(tag);
+                    el.textContent = text;
+                    preview.appendChild(el);
+                }
+
+                return preview;
+            }
+
+            function setMenuIndex(next) {
+                if (!menuItems.length) return;
+                menuIndex = (next + menuItems.length) % menuItems.length;
+                [...blockMenuList.children].forEach((el, i) => {
+                    el.classList.toggle('selected', i === menuIndex);
+                    if (i === menuIndex) el.scrollIntoView({ block: 'nearest' });
+                });
+            }
+
+            function renderBlockMenu(filter) {
+                const query = filter.trim().toLowerCase();
+                menuItems = BLOCK_FORMATS.filter(f =>
+                    !query || f.label.toLowerCase().includes(query) ||
+                    f.tag.startsWith(query) || f.hint.includes(query));
+                menuIndex = 0;
+                blockMenuList.innerHTML = '';
+
+                if (!menuItems.length) {
+                    const empty = document.createElement('div');
+                    empty.className = 'block-menu-empty';
+                    empty.textContent = 'No matching format';
+                    blockMenuList.appendChild(empty);
+                    return;
+                }
+
+                menuItems.forEach((format, i) => {
+                    const item = document.createElement('button');
+                    item.type = 'button';
+                    item.className = 'block-menu-item' + (i === 0 ? ' selected' : '');
+                    item.setAttribute('role', 'menuitem');
+
+                    const meta = document.createElement('span');
+                    meta.className = 'bm-meta';
+                    const label = document.createElement('span');
+                    label.className = 'bm-label';
+                    label.textContent = format.label;
+                    meta.appendChild(label);
+                    if (format.hint) {
+                        const hint = document.createElement('span');
+                        hint.className = 'bm-hint';
+                        hint.textContent = format.hint;
+                        meta.appendChild(hint);
+                    }
+                    item.appendChild(meta);
+                    item.appendChild(buildFormatPreview(format.tag, menuSampleText || format.label));
+
+                    item.addEventListener('mouseenter', () => setMenuIndex(i));
+                    item.addEventListener('mousedown', e => e.preventDefault());
+                    item.addEventListener('click', () => applyBlockFormat(format));
+                    blockMenuList.appendChild(item);
+                });
+            }
+
+            function openBlockMenu(block, anchorRect) {
+                block = formatTarget(block);
+                if (!block) return;
+                menuBlock = block;
+                saveSelection();
+                const sample = blockPlainText(block).replace(/\s+/g, ' ').trim();
+                menuSampleText = sample.length > 42 ? `${sample.slice(0, 42)}…` : sample;
+                blockMenuFilter.value = '';
+                renderBlockMenu('');
+                blockMenu.classList.add('show');
+
+                const { width, height } = blockMenu.getBoundingClientRect();
+                let top = anchorRect.bottom + 6;
+                if (top + height > window.innerHeight - 8) top = Math.max(8, anchorRect.top - height - 6);
+                blockMenu.style.top = `${top}px`;
+                blockMenu.style.left = `${Math.max(8, Math.min(anchorRect.left, window.innerWidth - width - 8))}px`;
+                blockMenuFilter.focus();
+            }
+
+            function closeBlockMenu(refocusEditor = true) {
+                if (!blockMenu.classList.contains('show')) return;
+                blockMenu.classList.remove('show');
+                menuBlock = null;
+                hideBlockTools(true);
+                if (refocusEditor) visualEditor.focus();
+            }
+
+            function applyBlockFormat(format) {
+                const block = menuBlock;
+                closeBlockMenu(false);
+                if (!block?.isConnected) return;
+
+                visualEditor.focus();
+                // execCommand-based formatters act on the caret, so make sure it
+                // sits inside the block the menu was opened for.
+                const anchor = savedSelectionRange?.startContainer;
+                const anchorEl = anchor?.nodeType === Node.TEXT_NODE ? anchor.parentNode : anchor;
+                if (anchorEl && block.contains(anchorEl)) restoreSelection();
+                else placeCaretAtEnd(block);
+
+                format.apply(block);
+                updateEditorAfterCustomChange();
+            }
+
+            blockFormatBtn.addEventListener('mousedown', e => e.preventDefault());
+            blockFormatBtn.addEventListener('click', () => {
+                if (blockMenu.classList.contains('show')) closeBlockMenu();
+                else openBlockMenu(toolsBlock, blockFormatBtn.getBoundingClientRect());
+            });
+
+            blockMenuFilter.addEventListener('input', () => renderBlockMenu(blockMenuFilter.value));
+
+            blockMenu.addEventListener('keydown', e => {
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    setMenuIndex(menuIndex + 1);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    setMenuIndex(menuIndex - 1);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (menuItems[menuIndex]) applyBlockFormat(menuItems[menuIndex]);
+                }
+            });
+
+            function openBlockMenuAtCaret() {
+                visualEditor.focus();
+                const selection = window.getSelection();
+                const block = resolveBlock(selection?.anchorNode, visualEditor);
+                if (!block) {
+                    showToast('Place the cursor inside a block first', 'info');
+                    return;
+                }
+                const caretRect = selection?.rangeCount ? selection.getRangeAt(0).getBoundingClientRect() : null;
+                const anchor = caretRect?.height ? caretRect : block.getBoundingClientRect();
+                openBlockMenu(block, anchor);
+            }
+
+            document.addEventListener('mousedown', e => {
+                if (!blockMenu.contains(e.target) && !blockTools.contains(e.target)) closeBlockMenu(false);
+            });
+
+            window.addEventListener('resize', () => {
+                closeBlockMenu(false);
+                hideBlockTools(true);
+            });
+
+            /* ---------- Find in document (Ctrl+F / ⌘F) ---------- */
+            // Matches are highlighted with the CSS Custom Highlight API so the
+            // document tree — and therefore the Markdown — stays untouched.
+            const HIGHLIGHT_API = typeof window.Highlight === 'function' && !!CSS.highlights;
+            let findMatches = [];
+            let findPos = -1;
+            let findRefreshTimer = null;
+
+            const inReaderMode = () => readerOverlay.classList.contains('show');
+            const findSurface = () => (inReaderMode() ? readerContent : visualEditor);
+            const findScroller = () => (inReaderMode() ? readerOverlay : editorContainerEl);
+
+            function paintFindHighlights() {
+                if (!HIGHLIGHT_API) return;
+                CSS.highlights.delete('md-find');
+                CSS.highlights.delete('md-find-current');
+                if (!findMatches.length) return;
+                CSS.highlights.set('md-find', new Highlight(...findMatches.filter((_, i) => i !== findPos)));
+                if (findPos >= 0) CSS.highlights.set('md-find-current', new Highlight(findMatches[findPos]));
+            }
+
+            function updateFindCount(query) {
+                if (!query) findCountEl.textContent = '';
+                else findCountEl.textContent = findMatches.length
+                    ? `${findPos + 1} of ${findMatches.length}`
+                    : 'No results';
+                $('#findPrevBtn').disabled = !findMatches.length;
+                $('#findNextBtn').disabled = !findMatches.length;
+            }
+
+            function runFind(query, keepPos = false) {
+                const previous = findPos;
+                findMatches = [];
+                findPos = -1;
+
+                if (query) {
+                    // Flatten the surface's text so matches can span elements,
+                    // keeping each node's start offset to rebuild ranges.
+                    const segments = [];
+                    let text = '';
+                    const walker = document.createTreeWalker(findSurface(), NodeFilter.SHOW_TEXT);
+                    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+                        if (!node.nodeValue) continue;
+                        segments.push({ node, start: text.length });
+                        text += node.nodeValue;
+                    }
+
+                    const locate = offset => {
+                        let lo = 0, hi = segments.length - 1, found = 0;
+                        while (lo <= hi) {
+                            const mid = (lo + hi) >> 1;
+                            if (segments[mid].start <= offset) { found = mid; lo = mid + 1; }
+                            else hi = mid - 1;
+                        }
+                        return { node: segments[found].node, offset: offset - segments[found].start };
+                    };
+
+                    const haystack = text.toLowerCase();
+                    const needle = query.toLowerCase();
+                    for (let at = haystack.indexOf(needle); at !== -1; at = haystack.indexOf(needle, at + needle.length)) {
+                        const start = locate(at);
+                        const end = locate(at + needle.length - 1);
+                        const range = document.createRange();
+                        range.setStart(start.node, start.offset);
+                        range.setEnd(end.node, end.offset + 1);
+                        findMatches.push(range);
+                    }
+
+                    if (findMatches.length) {
+                        findPos = keepPos ? Math.min(Math.max(previous, 0), findMatches.length - 1) : 0;
+                    }
+                }
+
+                paintFindHighlights();
+                updateFindCount(query);
+            }
+
+            function revealFindMatch() {
+                const range = findMatches[findPos];
+                if (!range) return;
+                const rect = range.getBoundingClientRect();
+                const scroller = findScroller();
+                const box = scroller.getBoundingClientRect();
+                if (rect.top < box.top + 60 || rect.bottom > box.bottom - 60) {
+                    scroller.scrollTop += rect.top - box.top - box.height / 2;
+                }
+                // Without the Highlight API the selection is the only visual cue.
+                if (!HIGHLIGHT_API) setRange(range.cloneRange());
+            }
+
+            function gotoFindMatch(delta) {
+                if (!findMatches.length) return;
+                findPos = (findPos + delta + findMatches.length) % findMatches.length;
+                paintFindHighlights();
+                updateFindCount(findInput.value);
+                revealFindMatch();
+            }
+
+            function openFind() {
+                const selection = window.getSelection();
+                const seed = selection && !selection.isCollapsed ? selection.toString().trim() : '';
+                if (seed && seed.length <= 120 && !seed.includes('\n')) findInput.value = seed;
+                findBar.classList.add('show');
+                findInput.focus();
+                findInput.select();
+                runFind(findInput.value);
+                revealFindMatch();
+            }
+
+            function closeFind() {
+                if (!findBar.classList.contains('show')) return;
+                findBar.classList.remove('show');
+                findMatches = [];
+                findPos = -1;
+                paintFindHighlights();
+                findCountEl.textContent = '';
+                if (!inReaderMode()) visualEditor.focus();
+            }
+
+            findInput.addEventListener('input', () => {
+                runFind(findInput.value);
+                revealFindMatch();
+            });
+
+            findInput.addEventListener('keydown', e => {
+                if (e.key !== 'Enter') return;
+                e.preventDefault();
+                gotoFindMatch(e.shiftKey ? -1 : 1);
+            });
+
+            $('#findPrevBtn').addEventListener('click', () => { gotoFindMatch(-1); findInput.focus(); });
+            $('#findNextBtn').addEventListener('click', () => { gotoFindMatch(1); findInput.focus(); });
+            $('#findCloseBtn').addEventListener('click', closeFind);
+
+            // Edits invalidate the match ranges; re-run against the new content.
+            visualEditor.addEventListener('input', () => {
+                if (!findBar.classList.contains('show')) return;
+                clearTimeout(findRefreshTimer);
+                findRefreshTimer = setTimeout(() => runFind(findInput.value, true), 200);
+            });
+
+            // Reader mode swaps the searched surface out from under us.
+            $('#readerModeBtn').addEventListener('click', closeFind);
+            $('#closeReaderModeBtn').addEventListener('click', closeFind);
+
+            // Capture phase: Escape must reach these layers before the handlers
+            // that close modals and reader mode.
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') {
+                    if (blockMenu.classList.contains('show')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        closeBlockMenu();
+                    } else if (findBar.classList.contains('show')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        closeFind();
+                    } else {
+                        hideBlockTools(true);
+                    }
+                    return;
+                }
+
+                if (!(e.metaKey || e.ctrlKey) || e.altKey || e.shiftKey) return;
+                const key = e.key.toLowerCase();
+                if (key === 'f') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openFind();
+                } else if (key === 'k') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openBlockMenuAtCaret();
+                }
+            }, true);
+
+            /* ---------- Markdown prefixes ("# " → Heading 1) ---------- */
+            const MD_PREFIX_RULES = [
+                { re: /^(#{1,6})$/, apply: (block, m) => applyBlockTag(block, `h${m[1].length}`) },
+                { re: /^>$/, apply: block => applyBlockTag(block, 'blockquote') },
+                { re: /^[-*+]$/, apply: () => executeCommand('insertUnorderedList') },
+                { re: /^\d{1,9}[.)]$/, apply: () => executeCommand('insertOrderedList') },
+                { re: /^\[([ xX]?)\]$/, apply: (block, m) => convertBlockToTaskList(block, /x/i.test(m[1])) },
+                { re: /^```([\w+#-]*)$/, apply: (block, m) => convertBlockToCodeBlock(block, m[1], true) }
+            ];
+
+            visualEditor.addEventListener('beforeinput', e => {
+                if (e.inputType !== 'insertText' || e.data !== ' ') return;
+
+                const selection = window.getSelection();
+                if (!selection?.rangeCount || !selection.isCollapsed) return;
+                const range = selection.getRangeAt(0);
+                if (!isNodeInsideEditor(range.startContainer)) return;
+
+                const block = resolveBlock(range.startContainer, visualEditor);
+                if (!block || block.closest('pre') || ['TD', 'TH'].includes(block.tagName)) return;
+
+                // Everything between the block's start and the caret — the rules
+                // are anchored, so only a bare prefix can match.
+                const prefixRange = document.createRange();
+                prefixRange.setStart(block, 0);
+                prefixRange.setEnd(range.endContainer, range.endOffset);
+                const prefix = prefixRange.toString();
+                if (!prefix || prefix.length > 8) return;
+
+                for (const rule of MD_PREFIX_RULES) {
+                    const match = prefix.match(rule.re);
+                    if (!match) continue;
+                    e.preventDefault();
+                    prefixRange.deleteContents();
+                    setRange(prefixRange);
+                    rule.apply(block, match);
+                    updateEditorAfterCustomChange();
+                    return;
+                }
+            });
+
+            /* ==========================================================
                INITIALIZATION
                ========================================================== */
             initTheme();
+            swapIconsForMac();
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('loadShared') === 'true') {
                 const request = indexedDB.open('wymd_share_db', 1);
@@ -2972,7 +5277,7 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
                 }
             });
 
-            if ('serviceWorker' in navigator) {
+            if ('serviceWorker' in navigator && !IS_TAURI && !IS_ANDROID) {
                 navigator.serviceWorker.register('sw.js').catch(err => {
                     console.warn('SW registration failed:', err);
                 });
@@ -2992,6 +5297,593 @@ Try inserting a [Link to Google](https://google.com), a color span, or dragging 
                         showToast('Could not open file', 'error');
                     }
                 });
+            }
+
+            /* ==========================================================
+               NATIVE SHELL INTEGRATION (Tauri desktop + Android WebView)
+               Active only inside a native shell; the plain web build
+               ignores this block. Both shells share the same document/tab
+               model — only the file plumbing differs. File refs are
+               absolute paths on desktop and content:// URIs on Android;
+               displayNames maps opaque URIs to human-readable names.
+               ========================================================== */
+            if (IS_TAURI || IS_ANDROID) {
+                const displayNames = new Map();
+                let listen = null;
+                let appWindow = null;
+                let platform;
+
+                if (IS_TAURI) {
+                    const { invoke } = window.__TAURI__.core;
+                    const dialog = window.__TAURI__.dialog;
+                    listen = window.__TAURI__.event.listen;
+                    appWindow = window.__TAURI__.window.getCurrentWindow();
+
+                    platform = {
+                        kind: 'tauri',
+                        invoke,
+                        async takePending() {
+                            return (await invoke('take_pending')) || [];
+                        },
+                        async writeFile(path, content) {
+                            await invoke('write_file', { path, content });
+                        },
+                        // Returns {path, content} or null when cancelled.
+                        async openDialog() {
+                            const path = await dialog.open({
+                                multiple: false,
+                                filters: [{ name: 'Markdown', extensions: ['md', 'markdown', 'txt'] }]
+                            });
+                            if (!path) return null;
+                            const content = await invoke('read_file', { path });
+                            return { path, content };
+                        },
+                        // Writes content to a user-picked location; returns the
+                        // new file ref or null when cancelled.
+                        async saveDialog(currentPath, suggestedName, content) {
+                            const path = await dialog.save({
+                                defaultPath: currentPath || suggestedName,
+                                filters: [{ name: 'Markdown', extensions: ['md', 'markdown'] }]
+                            });
+                            if (!path) return null;
+                            await invoke('write_file', { path, content });
+                            return path;
+                        },
+                        setEdited(edited) { invoke('set_edited', { edited }).catch(() => { }); },
+                        exitApp() { invoke('exit_app'); },
+                        closeWindow() { appWindow.destroy(); }
+                    };
+                } else {
+                    const bridge = window.AndroidBridge;
+                    // The SAF pickers are fire-and-forget from JS; Kotlin calls
+                    // these globals back with the result once the user picks.
+                    let openResolve = null;
+                    let saveAsResolve = null;
+                    window.__wymdOpenResult = json => {
+                        const resolve = openResolve;
+                        openResolve = null;
+                        if (resolve) resolve(json ? JSON.parse(json) : null);
+                    };
+                    window.__wymdSaveAsResult = json => {
+                        const resolve = saveAsResolve;
+                        saveAsResolve = null;
+                        if (resolve) resolve(json ? JSON.parse(json) : null);
+                    };
+
+                    platform = {
+                        kind: 'android',
+                        async takePending() {
+                            const raw = bridge.takePendingFiles();
+                            const files = raw ? JSON.parse(raw) : [];
+                            files.forEach(f => displayNames.set(f.path, f.name));
+                            return files;
+                        },
+                        async writeFile(path, content) {
+                            const result = bridge.writeDocument(path, content);
+                            if (result !== 'ok') throw new Error(result || 'write failed');
+                        },
+                        async openDialog() {
+                            const file = await new Promise(resolve => {
+                                openResolve = resolve;
+                                bridge.openDocument();
+                            });
+                            if (!file) return null;
+                            displayNames.set(file.path, file.name);
+                            return file;
+                        },
+                        async saveDialog(currentPath, suggestedName, content) {
+                            const file = await new Promise(resolve => {
+                                saveAsResolve = resolve;
+                                bridge.createDocument(suggestedName, content);
+                            });
+                            if (!file) return null;
+                            displayNames.set(file.path, file.name);
+                            return file.path;
+                        },
+                        setEdited() { },
+                        exitApp() { bridge.finishApp(); },
+                        closeWindow() { bridge.finishApp(); }
+                    };
+                }
+
+                let currentFilePath = null;
+                let isDirty = false;
+                let pendingContinue = null;
+
+                // Multi-document tab model. Each tab owns its file path, dirty
+                // flag, and a snapshot of the editor HTML + scroll position.
+                // Only the active tab's content lives in #visualEditor; the rest
+                // are parked in their snapshots until reactivated.
+                let tabs = [];
+                let activeTabId = null;
+                let tabSeq = 0;
+                const tabStrip = $('#tabStrip');
+                const docTitleEl = $('#docTitle');
+                const editorContainer = $('#editorContainer');
+
+                const activeTab = () => tabs.find(t => t.id === activeTabId) || null;
+                const anyDirty = () => tabs.some(t => t.dirty);
+                // An untitled, unmodified tab is scratch space — safe to reuse
+                // in place instead of spawning a new tab.
+                const isReusable = t => !!t && !t.path && !t.dirty;
+
+                const docNameEl = $('#docName');
+                const docEditedEl = $('#docEdited');
+                const saveChangesModal = $('#saveChangesModal');
+
+                if (appWindow) {
+                    // The toolbar row doubles as the native title bar: anywhere that
+                    // isn't an interactive control drags the window, and double-click
+                    // zooms, matching real title-bar behavior.
+                    const APP_BAR_CONTROLS = 'button, a, input, textarea, select, [contenteditable], .overflow-menu';
+                    $('.app-bar').addEventListener('mousedown', e => {
+                        if (e.button !== 0 || e.target.closest(APP_BAR_CONTROLS)) return;
+                        e.preventDefault();
+                        if (e.detail === 2) appWindow.toggleMaximize();
+                        else appWindow.startDragging();
+                    });
+
+                    // macOS shortcut hints: ⌘, not Ctrl.
+                    $$('[data-tooltip]').forEach(el => {
+                        el.dataset.tooltip = el.dataset.tooltip
+                            .replace('Ctrl+Y', '⇧⌘Z')
+                            .replace(/Ctrl\+/g, '⌘');
+                    });
+                }
+
+                const baseName = path => path
+                    ? (displayNames.get(path) || path.split(/[\\/]/).pop())
+                    : 'Untitled';
+
+                function refreshTitle() {
+                    docNameEl.textContent = baseName(currentFilePath);
+                    docEditedEl.hidden = !isDirty;
+                    document.title = `${baseName(currentFilePath)} — WYSIWYG MD`;
+                    renderTabs();
+                }
+
+                function setDirty(dirty) {
+                    const t = activeTab();
+                    if ((!t || t.dirty === dirty) && isDirty === dirty) return;
+                    if (t) t.dirty = dirty;
+                    isDirty = dirty;
+                    refreshTitle();
+                    // The window's "edited" indicator reflects ANY dirty tab.
+                    platform.setEdited(anyDirty());
+                }
+
+                function setCurrentFile(path) {
+                    const t = activeTab();
+                    if (t) t.path = path || null;
+                    currentFilePath = path || null;
+                    refreshTitle();
+                }
+
+                // Any mutation inside the editor marks the document dirty.
+                const dirtyObserver = new MutationObserver(() => setDirty(true));
+                dirtyObserver.observe(visualEditor, {
+                    subtree: true, childList: true, characterData: true, attributes: true
+                });
+
+                function markClean() {
+                    dirtyObserver.takeRecords();
+                    setDirty(false);
+                }
+
+                // Load the active tab's stored content into the live editor.
+                // The innerHTML write would trip the dirty observer, so we drain
+                // its queued records right after and restore the tab's own state.
+                function showActiveTab() {
+                    const t = activeTab();
+                    if (!t) return;
+                    visualEditor.innerHTML = t.html || '';
+                    dirtyObserver.takeRecords();
+                    clearSelectedImage();
+                    updateWordCount();
+                    updateToolbarState();
+                    isDirty = t.dirty;
+                    currentFilePath = t.path;
+                    refreshTitle();
+                    const top = t.scrollTop || 0;
+                    requestAnimationFrame(() => { editorContainer.scrollTop = top; });
+                }
+
+                // Park the active tab's live content before switching away.
+                function snapshotActive() {
+                    const t = activeTab();
+                    if (!t) return;
+                    t.html = visualEditor.innerHTML;
+                    t.scrollTop = editorContainer.scrollTop;
+                }
+
+                function activateTab(id) {
+                    if (id === activeTabId) { visualEditor.focus(); return; }
+                    snapshotActive();
+                    activeTabId = id;
+                    showActiveTab();
+                    visualEditor.focus();
+                }
+
+                // Replace the active tab's document in place.
+                function loadIntoActive(path, content) {
+                    loadMarkdown(content);
+                    setCurrentFile(path);
+                    markClean();
+                }
+
+                // Open a document. Reuse a pristine untitled tab when the current
+                // one is scratch space; otherwise spawn a fresh tab beside it so
+                // the open document is never overwritten.
+                function openWithContent(path, content) {
+                    if (!isReusable(activeTab())) {
+                        snapshotActive();
+                        const id = ++tabSeq;
+                        tabs.push({ id, path: null, dirty: false, html: '', scrollTop: 0 });
+                        activeTabId = id;
+                    }
+                    loadIntoActive(path, content);
+                    visualEditor.focus();
+                    showToast(`Opened ${baseName(path)}`, 'success');
+                }
+
+                function reallyCloseTab(id) {
+                    const idx = tabs.findIndex(t => t.id === id);
+                    if (idx === -1) return;
+                    const wasActive = id === activeTabId;
+                    tabs.splice(idx, 1);
+                    if (tabs.length === 0) {
+                        // Never leave the window without a document.
+                        const nid = ++tabSeq;
+                        tabs.push({ id: nid, path: null, dirty: false, html: '', scrollTop: 0 });
+                        activeTabId = nid;
+                        loadMarkdown('');
+                        setCurrentFile(null);
+                        markClean();
+                    } else if (wasActive) {
+                        activeTabId = tabs[Math.min(idx, tabs.length - 1)].id;
+                        showActiveTab();
+                    } else {
+                        renderTabs();
+                    }
+                    platform.setEdited(anyDirty());
+                    visualEditor.focus();
+                }
+
+                function closeTab(id) {
+                    const t = tabs.find(x => x.id === id);
+                    if (!t) return;
+                    if (t.dirty) {
+                        activateTab(id);
+                        confirmUnsaved(() => reallyCloseTab(id));
+                    } else {
+                        reallyCloseTab(id);
+                    }
+                }
+
+                // Render the tab strip. Shown only with 2+ documents open — the
+                // app-bar doc title covers the single-document case.
+                function renderTabs() {
+                    if (!tabStrip) return;
+                    const multi = tabs.length > 1;
+                    tabStrip.classList.toggle('has-tabs', multi);
+                    if (docTitleEl) docTitleEl.style.display = multi ? 'none' : '';
+                    tabStrip.innerHTML = '';
+                    if (!multi) return;
+                    tabs.forEach(t => {
+                        const el = document.createElement('div');
+                        el.className = 'tab' + (t.id === activeTabId ? ' active' : '');
+                        el.setAttribute('role', 'tab');
+                        el.setAttribute('aria-selected', String(t.id === activeTabId));
+                        el.title = t.path || 'Untitled';
+                        if (t.dirty) {
+                            const dot = document.createElement('span');
+                            dot.className = 'tab-dot';
+                            dot.setAttribute('aria-hidden', 'true');
+                            el.appendChild(dot);
+                        }
+                        const title = document.createElement('span');
+                        title.className = 'tab-title';
+                        title.textContent = baseName(t.path);
+                        el.appendChild(title);
+                        const close = document.createElement('button');
+                        close.className = 'tab-close';
+                        close.title = 'Close tab';
+                        close.setAttribute('aria-label', 'Close tab');
+                        close.textContent = '✕';
+                        el.appendChild(close);
+                        el.addEventListener('mousedown', e => {
+                            if (e.target.closest('.tab-close')) return;
+                            activateTab(t.id);
+                        });
+                        close.addEventListener('click', e => {
+                            e.stopPropagation();
+                            closeTab(t.id);
+                        });
+                        tabStrip.appendChild(el);
+                    });
+                    const add = document.createElement('button');
+                    add.className = 'tab-new';
+                    add.title = 'New tab';
+                    add.setAttribute('aria-label', 'New tab');
+                    add.textContent = '+';
+                    add.addEventListener('click', () => newDocument());
+                    tabStrip.appendChild(add);
+                }
+
+                // Pull any files the OS queued for us (double-click / "Open With"
+                // on macOS, VIEW intents on Android). On cold start the first
+                // file replaces the initial (sample) doc; everything after that
+                // opens in its own tab.
+                async function drainPending(initial) {
+                    try {
+                        const files = await platform.takePending();
+                        if (!files || !files.length) return;
+                        files.forEach((f, i) => {
+                            if (initial && i === 0) loadIntoActive(f.path, f.content);
+                            else openWithContent(f.path, f.content);
+                        });
+                    } catch (err) {
+                        console.warn('take_pending failed:', err);
+                    }
+                }
+
+                async function saveAs() {
+                    try {
+                        const suggested = currentFilePath ? baseName(currentFilePath) : 'Untitled.md';
+                        const path = await platform.saveDialog(currentFilePath, suggested, getMarkdown());
+                        if (!path) return false;
+                        setCurrentFile(path);
+                        markClean();
+                        showToast(`Saved ${baseName(path)}`, 'success');
+                        return true;
+                    } catch (err) {
+                        console.warn('saveAs failed:', err);
+                        showToast('Could not save file', 'error');
+                        return false;
+                    }
+                }
+
+                async function save() {
+                    if (!currentFilePath) return saveAs();
+                    try {
+                        await platform.writeFile(currentFilePath, getMarkdown());
+                        markClean();
+                        showToast(`Saved ${baseName(currentFilePath)}`, 'success');
+                        return true;
+                    } catch (err) {
+                        console.warn('save failed:', err);
+                        if (platform.kind === 'android') {
+                            // The source app may have granted read-only access
+                            // (common for VIEW intents) — fall back to Save As.
+                            showToast('No write access — pick where to save', 'info');
+                            return saveAs();
+                        }
+                        showToast('Could not save file', 'error');
+                        return false;
+                    }
+                }
+
+                async function openDialog() {
+                    try {
+                        const file = await platform.openDialog();
+                        if (!file) return;
+                        openWithContent(file.path, file.content);
+                    } catch (err) {
+                        console.warn('open failed:', err);
+                        showToast('Could not open file', 'error');
+                    }
+                }
+
+                function newDocument() {
+                    // Reuse the current tab only if it's untouched scratch space.
+                    if (!isReusable(activeTab())) {
+                        snapshotActive();
+                        const id = ++tabSeq;
+                        tabs.push({ id, path: null, dirty: false, html: '', scrollTop: 0 });
+                        activeTabId = id;
+                    }
+                    loadMarkdown('');
+                    setCurrentFile(null);
+                    markClean();
+                    visualEditor.focus();
+                }
+
+                function closeNow() {
+                    setDirty(false); // clear the edited dot before teardown
+                    platform.closeWindow();
+                }
+
+                function quitNow() {
+                    platform.exitApp();
+                }
+
+                /* Unsaved-changes flow: Save / Don't Save / Cancel, then run the
+                   action that triggered the prompt (close, quit, new, open). */
+                function confirmUnsaved(then) {
+                    pendingContinue = then;
+                    $('#saveChangesTitle').textContent =
+                        `Do you want to save the changes made to ${baseName(currentFilePath)}?`;
+                    saveChangesModal.classList.add('show');
+                }
+
+                async function resolveUnsaved(saveFirst) {
+                    closeModal(saveChangesModal, false);
+                    const action = pendingContinue;
+                    pendingContinue = null;
+                    if (saveFirst) {
+                        const ok = await save();
+                        if (!ok) return; // cancelled Save As or write failed — abort
+                    }
+                    if (action) action();
+                }
+
+                $('#saveAndCloseBtn').addEventListener('click', () => resolveUnsaved(true));
+                $('#dontSaveBtn').addEventListener('click', () => resolveUnsaved(false));
+
+                // Walk every dirty tab through the Save/Don't-Save flow, then run
+                // the terminal action (destroy the window / quit the app). The
+                // continuation force-clears the tab's dirty flag so a "Don't Save"
+                // can't loop, and re-enters to handle the next dirty tab.
+                function drainDirtyThen(finish) {
+                    const d = tabs.find(t => t.dirty);
+                    if (!d) { finish(); return; }
+                    activateTab(d.id);
+                    confirmUnsaved(() => {
+                        const t = tabs.find(x => x.id === d.id);
+                        if (t) t.dirty = false;
+                        drainDirtyThen(finish);
+                    });
+                }
+
+                if (appWindow) appWindow.onCloseRequested(event => {
+                    if (!anyDirty()) return;
+                    event.preventDefault();
+                    drainDirtyThen(closeNow);
+                });
+
+                // Files opened while the app is already running open in new tabs.
+                if (listen) listen('open-md-pending', () => drainPending(false));
+
+                if (platform.kind === 'android') {
+                    // Mobile toolbar: only the everyday controls stay in the
+                    // compact bottom row; a sliders toggle reveals the rest as
+                    // a wrapped panel.
+                    const primary = new Set([
+                        $('.toolbar-btn[data-command="undo"]'),
+                        blockFormatSelect,
+                        $('.toolbar-btn[data-command="bold"]'),
+                        $('.toolbar-btn[data-command="italic"]'),
+                        $('.toolbar-btn[data-command="insertUnorderedList"]'),
+                        insertLinkBtn,
+                        insertImageBtn
+                    ]);
+                    $$('.command-bar .toolbar-btn, .command-bar .toolbar-select, .command-bar .toolbar-color')
+                        .forEach(el => { if (!primary.has(el)) el.classList.add('cb-secondary'); });
+                    // Groups whose every control is secondary vanish entirely
+                    // when collapsed (so their flex gaps don't add up).
+                    $$('.command-bar .toolbar-group').forEach(g => {
+                        if (![...g.querySelectorAll('.toolbar-btn, .toolbar-select, .toolbar-color')]
+                            .some(el => primary.has(el))) g.classList.add('cb-secondary');
+                    });
+                    // No ⌘F on a phone, so find gets a permanent button.
+                    const findBtn = document.createElement('button');
+                    findBtn.className = 'toolbar-btn';
+                    findBtn.setAttribute('aria-label', 'Find in document');
+                    findBtn.innerHTML = '<i class="fas fa-magnifying-glass"></i>';
+                    findBtn.addEventListener('click', openFind);
+                    commandBar.appendChild(findBtn);
+
+                    // Driven by the "Format" item in the selection action menu.
+                    window.__wymdBlockMenu = openBlockMenuAtCaret;
+
+                    const moreBtn = document.createElement('button');
+                    moreBtn.className = 'toolbar-btn';
+                    moreBtn.setAttribute('aria-label', 'More formatting options');
+                    moreBtn.innerHTML = '<i class="fas fa-sliders"></i>';
+                    moreBtn.addEventListener('click', () => {
+                        const expanded = commandBar.classList.toggle('expanded');
+                        moreBtn.classList.toggle('active', expanded);
+                    });
+                    commandBar.appendChild(moreBtn);
+
+                    // Kotlin pings this when a VIEW intent arrives mid-session.
+                    window.__wymdOnPending = () => drainPending(false);
+
+                    // App-bar Open/Save buttons route through SAF instead of
+                    // the web <input type=file> / blob download.
+                    window.__wymdPlatformOpen = openDialog;
+                    window.__wymdPlatformSave = save;
+
+                    // System back: peel UI layers first, then guard unsaved
+                    // work, and only then let the activity close.
+                    window.__wymdHandleBack = () => {
+                        const shownModal = $('.modal-overlay.show');
+                        if (shownModal) { closeModal(shownModal); return 'handled'; }
+                        if (overflowMenu.classList.contains('show')) {
+                            overflowMenu.classList.remove('show');
+                            return 'handled';
+                        }
+                        if ($('#readerModeOverlay').classList.contains('show')) {
+                            closeReaderMode();
+                            return 'handled';
+                        }
+                        if (anyDirty()) { drainDirtyThen(quitNow); return 'handled'; }
+                        return 'exit';
+                    };
+                }
+
+                // Native menu items, forwarded from Rust as one event.
+                if (listen) listen('menu-action', ({ payload: id }) => {
+                    switch (id) {
+                        case 'new': newDocument(); break;
+                        case 'open': openDialog(); break;
+                        case 'save': save(); break;
+                        case 'save_as': saveAs(); break;
+                        case 'export_pdf': exportPDF(); break;
+                        case 'reader': toggleReaderMode(); break;
+                        case 'count': showSelectionCount(); break;
+                        case 'find': openFind(); break;
+                        case 'block_menu': openBlockMenuAtCaret(); break;
+                        case 'quit': drainDirtyThen(quitNow); break;
+                        case 'fmt_bold': executeCommand('bold'); break;
+                        case 'fmt_italic': executeCommand('italic'); break;
+                        case 'fmt_strike': executeCommand('strikeThrough'); break;
+                        case 'fmt_code': insertInlineCode(); break;
+                        case 'fmt_link': openModal(linkModal); break;
+                        case 'blk_p': formatCaretBlock('p'); break;
+                        case 'blk_h1': formatCaretBlock('h1'); break;
+                        case 'blk_h2': formatCaretBlock('h2'); break;
+                        case 'blk_h3': formatCaretBlock('h3'); break;
+                        case 'blk_quote': formatCaretBlock('blockquote'); break;
+                        case 'blk_pre': formatCaretBlock('pre'); break;
+                    }
+                });
+
+                // Desktop tab shortcuts: ⌘T new tab, ⌘W close tab (falls back to
+                // closing the window when it's the last one).
+                document.addEventListener('keydown', e => {
+                    if (!(e.metaKey || e.ctrlKey) || e.altKey) return;
+                    const k = e.key.toLowerCase();
+                    if (k === 't' && !e.shiftKey) {
+                        e.preventDefault();
+                        newDocument();
+                    } else if (k === 'w' && !e.shiftKey) {
+                        e.preventDefault();
+                        if (tabs.length > 1) closeTab(activeTabId);
+                        else drainDirtyThen(closeNow);
+                    }
+                });
+
+                // Seed the first tab from whatever the web bootstrap left in the
+                // editor (the sample doc, or a restored file).
+                tabs = [{ id: ++tabSeq, path: null, dirty: false, html: visualEditor.innerHTML, scrollTop: 0 }];
+                activeTabId = tabs[0].id;
+                setCurrentFile(null);
+                markClean();
+
+                // Cold start: grab whatever launched us (first file replaces the
+                // sample doc; any others open in their own tabs).
+                drainPending(true);
             }
         });
     </script>
